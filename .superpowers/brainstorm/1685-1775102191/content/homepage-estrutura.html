@@ -1,0 +1,102 @@
+<h2>Como organizar a homepage?</h2>
+<p class="subtitle">O usuário chega pelo link da bio do Instagram/TikTok. O que ele vê primeiro?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="hero-cats" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #fff; padding: 16px; min-height: 200px; font-family: sans-serif;">
+      <!-- Hero -->
+      <div style="background: linear-gradient(135deg, #FF6B35, #FFD23F); border-radius: 10px; padding: 14px 16px; color: white; margin-bottom: 10px;">
+        <div style="font-size: 9px; font-weight: 700; letter-spacing: 1px; opacity: 0.85; text-transform: uppercase;">Os melhores achados</div>
+        <div style="font-size: 18px; font-weight: 900; line-height: 1.2;">Produtos incríveis<br/>selecionados pra você</div>
+        <div style="margin-top: 8px; background: white; color: #FF6B35; font-size: 10px; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: inline-block;">Ver categorias →</div>
+      </div>
+      <!-- Cats row -->
+      <div style="font-size: 9px; font-weight: 700; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;">CATEGORIAS</div>
+      <div style="display: flex; gap: 6px; overflow: hidden;">
+        <div style="background: #FFF3ED; border-radius: 8px; padding: 8px; flex: 1; text-align: center;"><div style="font-size: 16px;">🐾</div><div style="font-size: 8px; font-weight: 700; color: #FF6B35; margin-top: 2px;">Pets</div></div>
+        <div style="background: #EDF2FF; border-radius: 8px; padding: 8px; flex: 1; text-align: center;"><div style="font-size: 16px;">🎮</div><div style="font-size: 8px; font-weight: 700; color: #4263EB; margin-top: 2px;">Games</div></div>
+        <div style="background: #EBFBEE; border-radius: 8px; padding: 8px; flex: 1; text-align: center;"><div style="font-size: 16px;">👟</div><div style="font-size: 8px; font-weight: 700; color: #2F9E44; margin-top: 2px;">Esporte</div></div>
+        <div style="background: #FFF9DB; border-radius: 8px; padding: 8px; flex: 1; text-align: center;"><div style="font-size: 16px;">📚</div><div style="font-size: 8px; font-weight: 700; color: #E67700; margin-top: 2px;">Livros</div></div>
+      </div>
+      <!-- Products -->
+      <div style="font-size: 9px; font-weight: 700; color: #999; letter-spacing: 1px; text-transform: uppercase; margin: 8px 0 6px;">EM DESTAQUE</div>
+      <div style="display: flex; gap: 6px;">
+        <div style="background: #F5F5F5; border-radius: 8px; height: 50px; flex: 1;"></div>
+        <div style="background: #F5F5F5; border-radius: 8px; height: 50px; flex: 1;"></div>
+        <div style="background: #F5F5F5; border-radius: 8px; height: 50px; flex: 1;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Hero + Categorias + Destaques</h3>
+      <p>Banner animado no topo, depois atalhos de categoria em ícones, depois produtos em destaque de todas as categorias. Layout padrão de e-commerce, familiar e funcional.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="cats-first" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #fff; padding: 16px; min-height: 200px; font-family: sans-serif;">
+      <!-- Header simples -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+        <div style="font-size: 14px; font-weight: 900; color: #FF6B35;">achadinhos</div>
+        <div style="font-size: 9px; background: #FF6B35; color: white; padding: 3px 8px; border-radius: 20px; font-weight: 700;">🔥 Hoje</div>
+      </div>
+      <!-- Big cat cards -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div style="background: linear-gradient(135deg, #FF6B35, #FF8C5A); border-radius: 10px; padding: 12px; color: white; grid-column: 1 / -1;">
+          <div style="font-size: 20px;">🐾</div>
+          <div style="font-size: 13px; font-weight: 800; margin-top: 2px;">Pets</div>
+          <div style="font-size: 9px; opacity: 0.85;">42 achados desta semana</div>
+        </div>
+        <div style="background: linear-gradient(135deg, #4263EB, #5C7CFA); border-radius: 10px; padding: 12px; color: white;">
+          <div style="font-size: 18px;">🎮</div>
+          <div style="font-size: 12px; font-weight: 800; margin-top: 2px;">Games</div>
+          <div style="font-size: 9px; opacity: 0.85;">28 achados</div>
+        </div>
+        <div style="background: linear-gradient(135deg, #2F9E44, #51CF66); border-radius: 10px; padding: 12px; color: white;">
+          <div style="font-size: 18px;">👟</div>
+          <div style="font-size: 12px; font-weight: 800; margin-top: 2px;">Esporte</div>
+          <div style="font-size: 9px; opacity: 0.85;">19 achados</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Categorias como Destaque Principal</h3>
+      <p>Sem hero. As categorias são os blocos principais, cada uma com cor própria. Pets ocupa mais espaço por ser o canal ativo. Direto ao ponto — o usuário escolhe o nicho dele.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="feed" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #fff; padding: 16px; min-height: 200px; font-family: sans-serif;">
+      <!-- Sticky tabs -->
+      <div style="display: flex; gap: 4px; margin-bottom: 10px; background: #F5F5F5; padding: 4px; border-radius: 8px;">
+        <div style="background: #FF6B35; color: white; font-size: 9px; font-weight: 700; padding: 4px 8px; border-radius: 6px; flex: 1; text-align: center;">Tudo</div>
+        <div style="color: #666; font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 6px; flex: 1; text-align: center;">🐾 Pets</div>
+        <div style="color: #666; font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 6px; flex: 1; text-align: center;">🎮 Games</div>
+        <div style="color: #666; font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 6px; flex: 1; text-align: center;">+ ver</div>
+      </div>
+      <!-- Feed grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div style="background: #F5F5F5; border-radius: 8px; height: 70px; position: relative; overflow: hidden;">
+          <div style="position: absolute; bottom: 4px; left: 6px; font-size: 8px; font-weight: 700; color: #333;">R$ 49,90</div>
+          <div style="position: absolute; top: 4px; right: 4px; background: #FF6B35; color: white; font-size: 7px; font-weight: 700; padding: 2px 5px; border-radius: 10px;">🔥</div>
+        </div>
+        <div style="background: #F5F5F5; border-radius: 8px; height: 70px; position: relative; overflow: hidden;">
+          <div style="position: absolute; bottom: 4px; left: 6px; font-size: 8px; font-weight: 700; color: #333;">R$ 129,90</div>
+        </div>
+        <div style="background: #F5F5F5; border-radius: 8px; height: 70px; position: relative; overflow: hidden;">
+          <div style="position: absolute; bottom: 4px; left: 6px; font-size: 8px; font-weight: 700; color: #333;">R$ 29,90</div>
+          <div style="position: absolute; top: 4px; right: 4px; background: #FFD23F; color: #333; font-size: 7px; font-weight: 700; padding: 2px 5px; border-radius: 10px;">NOVO</div>
+        </div>
+        <div style="background: #F5F5F5; border-radius: 8px; height: 70px; position: relative; overflow: hidden;">
+          <div style="position: absolute; bottom: 4px; left: 6px; font-size: 8px; font-weight: 700; color: #333;">R$ 89,90</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Feed com Filtro por Categoria</h3>
+      <p>Abas no topo para filtrar. Grid de produtos em destaque direto na home. Parece Instagram/Pinterest — o usuário rola e descobre. Mais adequado quando tiver muitos produtos.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top: 16px;">Clique para selecionar a estrutura preferida.</p>

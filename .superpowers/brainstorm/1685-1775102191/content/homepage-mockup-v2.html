@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Achadinhos — Mockup v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F5F5; color: #111; }
+
+  .header {
+    background: white;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #F0F0F0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .logo { font-size: 22px; font-weight: 900; color: #FF6B35; letter-spacing: -0.5px; }
+  .logo span { color: #FFD23F; }
+  .header-icons { display: flex; gap: 8px; }
+  .header-icon { width: 36px; height: 36px; background: #FFF3ED; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+
+  .hero {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFD23F 100%);
+    padding: 28px 20px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after { content: ''; position: absolute; right: -20px; top: -20px; width: 140px; height: 140px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .hero::before { content: ''; position: absolute; right: 30px; bottom: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .hero-eyebrow { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .hero-title { font-size: 26px; font-weight: 900; color: white; line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .hero-sub { font-size: 14px; color: rgba(255,255,255,0.88); margin-bottom: 18px; }
+  .hero-btn { display: inline-flex; align-items: center; gap: 6px; background: white; color: #FF6B35; font-size: 13px; font-weight: 800; padding: 10px 18px; border-radius: 24px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+  .section { padding: 20px 20px 8px; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .section-title { font-size: 13px; font-weight: 800; color: #111; letter-spacing: 0.5px; text-transform: uppercase; }
+  .section-link { font-size: 12px; font-weight: 600; color: #FF6B35; }
+
+  .cats { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat-pill { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
+  .cat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .cat-label { font-size: 10px; font-weight: 700; color: #444; }
+  .cat-active .cat-label { color: #FF6B35; }
+
+  /* GRID 2 COLUNAS */
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 20px;
+  }
+  .product-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    position: relative;
+  }
+  .product-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 10px;
+  }
+  .badge-hot { background: #FF6B35; color: white; }
+  .badge-new { background: #FFD23F; color: #333; }
+  .product-info { padding: 10px 10px 12px; flex: 1; display: flex; flex-direction: column; }
+  .product-store { font-size: 9px; color: #999; font-weight: 500; margin-bottom: 3px; }
+  .product-name { font-size: 11px; font-weight: 700; color: #111; line-height: 1.35; flex: 1; }
+  .product-price { font-size: 15px; font-weight: 900; color: #FF6B35; margin-top: 6px; }
+  .product-btn {
+    margin: 0 10px 10px;
+    background: #FF6B35;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 1px solid #F0F0F0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 9px; font-weight: 600; color: #999; cursor: pointer; }
+  .nav-item.active { color: #FF6B35; }
+  .nav-item .nav-icon { font-size: 20px; }
+
+  .spacer { height: 80px; }
+  .screen-label { background: #111; color: white; font-size: 10px; font-weight: 700; text-align: center; padding: 6px; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<div class="screen-label">MOCKUP v2 — GRID 2 COLUNAS</div>
+
+<div class="header">
+  <div class="logo">acha<span>dinhos</span></div>
+  <div class="header-icons">
+    <div class="header-icon">🔍</div>
+    <div class="header-icon">🔔</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">✨ Curadoria semanal</div>
+  <div class="hero-title">Os melhores<br>achados pra você</div>
+  <div class="hero-sub">Produtos selecionados da Amazon e Shopee</div>
+  <a class="hero-btn" href="#">Ver tudo &nbsp;→</a>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Categorias</div>
+    <div class="section-link">Ver todas →</div>
+  </div>
+</div>
+<div class="cats">
+  <div class="cat-pill cat-active">
+    <div class="cat-icon" style="background: #FFF3ED;">🐾</div>
+    <div class="cat-label" style="color: #FF6B35;">Pets</div>
+  </div>
+  <div class="cat-pill">
+    <div class="cat-icon" style="background: #EDF2FF;">🎮</div>
+    <div class="cat-label">Games</div>
+  </div>
+  <div class="cat-pill">
+    <div class="cat-icon" style="background: #EBFBEE;">👟</div>
+    <div class="cat-label">Esporte</div>
+  </div>
+  <div class="cat-pill">
+    <div class="cat-icon" style="background: #FFF9DB;">📚</div>
+    <div class="cat-label">Livros</div>
+  </div>
+  <div class="cat-pill">
+    <div class="cat-icon" style="background: #FCE4EC;">👗</div>
+    <div class="cat-label">Roupas</div>
+  </div>
+  <div class="cat-pill">
+    <div class="cat-icon" style="background: #F3E8FF;">🏠</div>
+    <div class="cat-label">Casa</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">🔥 Em destaque</div>
+    <div class="section-link">Ver mais →</div>
+  </div>
+</div>
+
+<div class="product-grid">
+
+  <a class="product-card" href="#">
+    <div class="product-thumb" style="background: #FFF3ED;">
+      🦮
+      <span class="product-badge badge-hot">🔥 DESTAQUE</span>
+    </div>
+    <div class="product-info">
+      <div class="product-store">🛒 Amazon</div>
+      <div class="product-name">Coleira ajustável premium para cães médios</div>
+      <div class="product-price">R$ 49,90</div>
+    </div>
+    <div class="product-btn">Ver oferta →</div>
+  </a>
+
+  <a class="product-card" href="#">
+    <div class="product-thumb" style="background: #EDF2FF;">
+      🎮
+    </div>
+    <div class="product-info">
+      <div class="product-store">🛒 Amazon</div>
+      <div class="product-name">Controle sem fio gamer com LED RGB</div>
+      <div class="product-price">R$ 129,90</div>
+    </div>
+    <div class="product-btn">Ver oferta →</div>
+  </a>
+
+  <a class="product-card" href="#">
+    <div class="product-thumb" style="background: #EBFBEE;">
+      👟
+      <span class="product-badge badge-new">NOVO</span>
+    </div>
+    <div class="product-info">
+      <div class="product-store">🏪 Shopee</div>
+      <div class="product-name">Tênis esportivo respirável unissex</div>
+      <div class="product-price">R$ 89,90</div>
+    </div>
+    <div class="product-btn">Ver oferta →</div>
+  </a>
+
+  <a class="product-card" href="#">
+    <div class="product-thumb" style="background: #FFF9DB;">
+      📚
+    </div>
+    <div class="product-info">
+      <div class="product-store">🛒 Amazon</div>
+      <div class="product-name">Box Harry Potter edição especial capa dura</div>
+      <div class="product-price">R$ 159,90</div>
+    </div>
+    <div class="product-btn">Ver oferta →</div>
+  </a>
+
+  <a class="product-card" href="#">
+    <div class="product-thumb" style="background: #FCE4EC;">
+      👗
+      <span class="product-badge badge-hot">🔥 DESTAQUE</span>
+    </div>
+    <div class="product-info">
+      <div class="product-store">🏪 Shopee</div>
+      <div class="product-name">Blusa oversized tie-dye verão 2025</div>
+      <div class="product-price">R$ 39,90</div>
+    </div>
+    <div class="product-btn">Ver oferta →</div>
+  </a>
+
+  <a class="product-card" href="#">
+    <div class="product-thumb" style="background: #F3E8FF;">
+      🏠
+    </div>
+    <div class="product-info">
+      <div class="product-store">🛒 Amazon</div>
+      <div class="product-name">Luminária LED de mesa touch recarregável</div>
+      <div class="product-price">R$ 59,90</div>
+    </div>
+    <div class="product-btn">Ver oferta →</div>
+  </a>
+
+</div>
+
+<div class="spacer"></div>
+
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <div class="nav-icon">🏠</div>
+    Início
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">🔍</div>
+    Buscar
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">🔥</div>
+    Ofertas
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">📂</div>
+    Categorias
+  </div>
+</div>
+
+</body>
+</html>
