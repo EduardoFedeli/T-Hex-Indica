@@ -13,5 +13,5 @@ export function getCategoria(slug: string): Categoria | null {
 
 export function getProdutosDestaque(limite?: number): Produto[] {
   const todos = categorias.flatMap(c => c.produtos.filter(p => p.destaque))
-  return limite ? todos.slice(0, limite) : todos
+  return limite !== undefined ? todos.slice(0, limite) : todos
 }
