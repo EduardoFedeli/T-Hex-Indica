@@ -17,7 +17,9 @@ export function getCategoria(slug: string): Categoria | null {
 
 export function getProdutosDestaque(limite?: number): Produto[] {
   const todos = categorias.flatMap(c => c.produtos.filter(p => p.destaque))
-  return limite !== undefined ? todos.slice(0, limite) : todos
+  // Desduplicação inteligente baseada no ID do produto
+  const unicos = Array.from(new Map(todos.map(p => [p.id, p])).values())
+  return limite !== undefined ? unicos.slice(0, limite) : unicos
 }
 
 export function getProdutos(slug: string, filtros: FiltrosProduto = {}): Produto[] {
@@ -56,8 +58,11 @@ export function getProdutos(slug: string, filtros: FiltrosProduto = {}): Produto
 }
 
 export function getProdutosOferta(): Produto[] {
-  return categorias
+  const todosOfertas = categorias
     .flatMap(c => c.produtos)
     .filter(p => (p.desconto_pct ?? 0) > 0)
     .sort((a, b) => (b.desconto_pct ?? 0) - (a.desconto_pct ?? 0))
+  
+  // Desduplicação baseada no ID
+  return Array.from(new Map(todosOfertas.map(p => [p.id, p])).values())
 }

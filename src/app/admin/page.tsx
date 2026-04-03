@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-page-bg px-4">
       <div className="w-full max-w-sm rounded-2xl bg-card-bg border border-card-border p-8">
         <h1 className="mb-1 text-2xl font-black text-white">
-          <span className="font-light">acha</span>dinhos
+          <span className="font-light">T-Hex</span> Indica
         </h1>
         <p className="mb-6 text-sm text-muted-foreground">Painel administrativo</p>
 

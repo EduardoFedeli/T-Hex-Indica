@@ -23,16 +23,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
-  const body = await request.json() as { categoriaSlug: string; produto: Produto }
+  // Agora suporta tanto string única (legado) quanto array de strings (nova arquitetura)
+  const body = await request.json() as { categoriaSlugs?: string[]; categoriaSlug?: string; produto: Produto }
   const data = readData()
 
-  const cat = data.categorias.find(c => c.slug === body.categoriaSlug)
-  if (!cat) {
-    return NextResponse.json({ error: 'Categoria não encontrada' }, { status: 404 })
+  const slugsTarget = body.categoriaSlugs || (body.categoriaSlug ? [body.categoriaSlug] : [])
+  if (slugsTarget.length === 0) {
+    return NextResponse.json({ error: 'Nenhuma categoria informada' }, { status: 400 })
   }
 
-  cat.produtos.push(body.produto)
-  writeData(data)
+  let inserido = false
+  for (const cat of data.categorias) {
+    if (slugsTarget.includes(cat.slug)) {
+      // Evita duplicidade no mesmo array
+      if (!cat.produtos.some(p => p.id === body.produto.id)) {
+        cat.produtos.push(body.produto)
+        inserido = true
+      }
+    }
+  }
 
+  if (!inserido) {
+    return NextResponse.json({ error: 'Categorias não encontradas' }, { status: 404 })
+  }
+
+  writeData(data)
   return NextResponse.json({ ok: true }, { status: 201 })
 }

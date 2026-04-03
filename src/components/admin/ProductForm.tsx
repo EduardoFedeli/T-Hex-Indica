@@ -5,13 +5,20 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
 import type { Produto, Categoria, Loja } from '@/types'
 
 const LOJAS: Loja[] = ['amazon', 'shopee', 'magalu', 'mercadolivre', 'americanas', 'casasbahia', 'centauro', 'aliexpress']
 
+// Suporte retroativo para quando a prop antiga tinha apenas categoriaSlug
+interface ProdutoComCategoria extends Produto {
+  categoriaSlug?: string
+  categoriaSlugs?: string[]
+}
+
 interface ProductFormProps {
   categorias: Categoria[]
-  produto?: Produto & { categoriaSlug: string }
+  produto?: ProdutoComCategoria
   onSave: () => void
   onCancel: () => void
 }
@@ -19,7 +26,14 @@ interface ProductFormProps {
 export default function ProductForm({ categorias, produto, onSave, onCancel }: ProductFormProps) {
   const isEdit = !!produto
   const [nome, setNome] = useState(produto?.nome ?? '')
-  const [categoriaSlug, setCategoriaSlug] = useState(produto?.categoriaSlug ?? categorias[0]?.slug ?? '')
+  
+  // Inicializa o array de categorias. Se for um produto antigo com apenas 'categoriaSlug', transforma em array.
+  const initialCategories = produto?.categoriaSlugs?.length 
+    ? produto.categoriaSlugs 
+    : (produto?.categoriaSlug ? [produto.categoriaSlug] : [categorias[0]?.slug ?? ''])
+  
+  const [selectedCategorias, setSelectedCategorias] = useState<string[]>(initialCategories)
+  
   const [preco, setPreco] = useState(produto?.preco?.toString() ?? '')
   const [precoOriginal, setPrecoOriginal] = useState(produto?.preco_original?.toString() ?? '')
   const [desconto, setDesconto] = useState(produto?.desconto_pct?.toString() ?? '')
@@ -30,6 +44,12 @@ export default function ProductForm({ categorias, produto, onSave, onCancel }: P
   const [tags, setTags] = useState<string[]>(produto?.tags ?? [])
   const [destaque, setDestaque] = useState(produto?.destaque ?? false)
   const [novo, setNovo] = useState(produto?.novo ?? false)
+  // Estado para capturar e editar a data formatada para o input date (YYYY-MM-DD)
+  const [dataCadastro, setDataCadastro] = useState(
+    produto?.createdAt 
+      ? new Date(produto.createdAt).toISOString().split('T')[0] 
+      : new Date().toISOString().split('T')[0]
+  )
   const [loading, setLoading] = useState(false)
 
   function handlePrecoOriginalChange(v: string) {
@@ -55,12 +75,26 @@ export default function ProductForm({ categorias, produto, onSave, onCancel }: P
     setTags(tags.filter(t => t !== tag))
   }
 
+  function toggleCategoria(slug: string) {
+    setSelectedCategorias(prev => 
+      prev.includes(slug) 
+        ? prev.filter(s => s !== slug) 
+        : [...prev, slug]
+    )
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    
+    if (selectedCategorias.length === 0) {
+      alert('Selecione ao menos uma categoria.')
+      return
+    }
+    
     setLoading(true)
 
     const novoProduto: Produto = {
-      id: produto?.id ?? `${categoriaSlug}-${Date.now()}`,
+      id: produto?.id ?? `prod-${Date.now()}`,
       nome,
       preco: parseFloat(preco),
       preco_original: precoOriginal ? parseFloat(precoOriginal) : undefined,
@@ -71,13 +105,18 @@ export default function ProductForm({ categorias, produto, onSave, onCancel }: P
       tags: tags.length > 0 ? tags : undefined,
       destaque,
       novo,
-      // Se já existir mantém, caso contrário carimba a data de agora (criação).
-      createdAt: produto?.createdAt ?? new Date().toISOString(),
+      // Força a atualização da data escolhida no calendário manualmente (mantendo horário neutro Z)
+      createdAt: new Date(`${dataCadastro}T12:00:00Z`).toISOString(),
     }
 
     const url = isEdit ? `/api/produtos/${produto!.id}` : '/api/produtos'
     const method = isEdit ? 'PUT' : 'POST'
-    const body = isEdit ? novoProduto : { categoriaSlug, produto: novoProduto }
+    
+    // Novo payload unificado enviando o produto e as categorias alvo
+    const body = {
+      produto: novoProduto,
+      categoriaSlugs: selectedCategorias
+    }
 
     const res = await fetch(url, {
       method,
@@ -97,7 +136,7 @@ export default function ProductForm({ categorias, produto, onSave, onCancel }: P
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-foreground">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="sm:col-span-2 space-y-1.5">
-          <Label>Nome do Produto</Label>
+          <Label>Nome do Produto <span className="text-primary font-bold">*</span></Label>
           <Input 
             value={nome} 
             onChange={e => setNome(e.target.value)} 
@@ -106,18 +145,27 @@ export default function ProductForm({ categorias, produto, onSave, onCancel }: P
           />
         </div>
         
-        <div className="space-y-1.5">
-          <Label>Categoria</Label>
-          <select
-            value={categoriaSlug}
-            onChange={e => setCategoriaSlug(e.target.value)}
-            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
-            required
-          >
-            {categorias.map(c => (
-              <option key={c.slug} value={c.slug} className="bg-card text-foreground">{c.nome}</option>
-            ))}
-          </select>
+        <div className="sm:col-span-2 space-y-2">
+          <Label>Categorias (Selecione uma ou mais)</Label>
+          <div className="flex flex-wrap gap-2">
+            {categorias.map(c => {
+              const isSelected = selectedCategorias.includes(c.slug)
+              return (
+                <Badge
+                  key={c.slug}
+                  variant={isSelected ? "default" : "outline"}
+                  onClick={() => toggleCategoria(c.slug)}
+                  className={`cursor-pointer px-3 py-1 text-sm select-none transition-colors ${
+                    isSelected 
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent' 
+                      : 'bg-background border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'
+                  }`}
+                >
+                  {c.emoji} {c.nome}
+                </Badge>
+              )
+            })}
+          </div>
         </div>
 
         <div className="space-y-1.5">
@@ -214,7 +262,20 @@ export default function ProductForm({ categorias, produto, onSave, onCancel }: P
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-secondary/30 p-3 rounded-lg border border-border">
+        <div className="sm:col-span-2 space-y-1.5 border-t border-border pt-5 mt-2">
+          <Label>Data de Cadastro (Para auditoria de +90 dias)</Label>
+          <Input 
+            type="date"
+            value={dataCadastro}
+            onChange={e => setDataCadastro(e.target.value)}
+            className="bg-background border-input max-w-[200px]"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Você pode backdatar um produto para testar o filtro, ou forçar uma renovação manual.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 bg-secondary/30 p-3 rounded-lg border border-border mt-2">
           <Switch id="destaque" checked={destaque} onCheckedChange={setDestaque} />
           <Label htmlFor="destaque" className="cursor-pointer">Destaque na vitrine</Label>
         </div>

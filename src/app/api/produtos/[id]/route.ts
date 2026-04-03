@@ -24,22 +24,39 @@ export async function PUT(request: Request, { params }: RouteContext) {
   }
 
   const { id } = await params
-  const body = await request.json() as Produto
-  const data = readData()
+  const payload = await request.json()
+  
+  // Extrai o produto e o array de categorias alvo da requisição
+  const body = (payload.produto || payload) as Produto
+  const novasCategorias = payload.categoriaSlugs as string[] | undefined
 
-  let found = false
-  for (const cat of data.categorias) {
-    const idx = cat.produtos.findIndex(p => p.id === id)
-    if (idx !== -1) {
-      cat.produtos[idx] = body
-      found = true
-      break
+  const data = readData()
+  let modified = false
+
+  if (novasCategorias && novasCategorias.length > 0) {
+    // 1. Remove o produto de TODAS as categorias atuais
+    data.categorias.forEach(cat => {
+      cat.produtos = cat.produtos.filter(p => p.id !== id)
+    })
+    // 2. Insere a versão atualizada apenas nas categorias selecionadas
+    data.categorias.forEach(cat => {
+      if (novasCategorias.includes(cat.slug)) {
+        cat.produtos.push(body)
+        modified = true
+      }
+    })
+  } else {
+    // Modo Legado: Apenas atualiza in-place nas categorias em que já existe
+    for (const cat of data.categorias) {
+      const idx = cat.produtos.findIndex(p => p.id === id)
+      if (idx !== -1) {
+        cat.produtos[idx] = body
+        modified = true
+      }
     }
   }
 
-  if (!found) {
-    return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
-  }
+  if (!modified) return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
 
   writeData(data)
   return NextResponse.json({ ok: true })
@@ -52,20 +69,18 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
 
   const { id } = await params
   const data = readData()
-
   let found = false
+
+  // Varre TODAS as categorias e deleta o ID se existir
   for (const cat of data.categorias) {
     const idx = cat.produtos.findIndex(p => p.id === id)
     if (idx !== -1) {
       cat.produtos.splice(idx, 1)
       found = true
-      break
     }
   }
 
-  if (!found) {
-    return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
-  }
+  if (!found) return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
 
   writeData(data)
   return NextResponse.json({ ok: true })

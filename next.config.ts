@@ -4,12 +4,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: '**', // Permite qualquer domínio HTTPS
       },
-      // Caso futuramente você use links da Amazon ou AliExpress, 
-      // precisaremos adicionar os domínios deles aqui também.
     ],
   },
 };

@@ -14,7 +14,6 @@ export default function ProdutosPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Produtos ({produtos.length})</h1>
       <ProductsTable produtos={produtos} categorias={categorias} />
     </div>
   )

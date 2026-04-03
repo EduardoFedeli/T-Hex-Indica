@@ -21,38 +21,8 @@
             "coleira"
           ],
           "destaque": true,
-          "novo": false
-        },
-        {
-          "id": "pet-002",
-          "nome": "Comedouro automático com timer programável",
-          "preco": 129.9,
-          "preco_original": 169.9,
-          "desconto_pct": 24,
-          "imagem": "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=400&h=400&fit=crop",
-          "link_afiliado": "https://amzn.to/exemplo",
-          "loja": "amazon",
-          "tags": [
-            "cachorro",
-            "gato",
-            "alimentacao"
-          ],
-          "destaque": false,
-          "novo": true
-        },
-        {
-          "id": "pet-003",
-          "nome": "Arranhador em sisal para gatos 60cm",
-          "preco": 39.9,
-          "imagem": "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400&h=400&fit=crop",
-          "link_afiliado": "https://shopee.com.br/exemplo",
-          "loja": "shopee",
-          "tags": [
-            "gato",
-            "brinquedos"
-          ],
-          "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "pet-004",
@@ -68,7 +38,8 @@
             "alimentacao"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "pet-005",
@@ -85,7 +56,8 @@
             "camas-casinhas"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "pet-006",
@@ -100,7 +72,41 @@
             "higiene"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
+        },
+        {
+          "id": "pet-002",
+          "nome": "Comedouro automático com timer programável",
+          "preco": 129.9,
+          "preco_original": 169.9,
+          "desconto_pct": 24,
+          "imagem": "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=400&h=400&fit=crop",
+          "link_afiliado": "https://amzn.to/exemplo",
+          "loja": "amazon",
+          "tags": [
+            "cachorro",
+            "gato",
+            "alimentacao"
+          ],
+          "destaque": false,
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
+        },
+        {
+          "id": "pet-003",
+          "nome": "Arranhador em sisal para gatos 60cm",
+          "preco": 39.9,
+          "imagem": "https://down-br.img.susercontent.com/file/br-11134207-81z1k-mgwa3pv3b6dg97@resize_w450_nl.webp",
+          "link_afiliado": "https://shopee.com.br/exemplo",
+          "loja": "shopee",
+          "tags": [
+            "gato",
+            "brinquedos"
+          ],
+          "destaque": true,
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -126,7 +132,8 @@
             "xbox"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "games-002",
@@ -142,7 +149,8 @@
             "pc"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "games-003",
@@ -156,7 +164,8 @@
             "pc"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "games-004",
@@ -172,7 +181,8 @@
             "pc"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "games-005",
@@ -188,7 +198,8 @@
             "pc"
           ],
           "destaque": true,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "games-006",
@@ -204,7 +215,8 @@
             "pc"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -228,7 +240,8 @@
             "audio"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tech-002",
@@ -243,7 +256,8 @@
             "carregadores"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tech-003",
@@ -258,7 +272,8 @@
             "cameras"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tech-004",
@@ -271,7 +286,8 @@
             "acessorios"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tech-005",
@@ -287,7 +303,8 @@
             "carregadores"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tech-006",
@@ -302,7 +319,8 @@
             "audio"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -326,7 +344,8 @@
             "musculacao"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "fitness-002",
@@ -341,7 +360,8 @@
             "yoga"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "fitness-003",
@@ -354,7 +374,8 @@
             "cardio"
           ],
           "destaque": true,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "fitness-004",
@@ -369,7 +390,8 @@
             "suplementos"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "fitness-005",
@@ -384,7 +406,8 @@
             "vestuario"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "fitness-006",
@@ -397,7 +420,8 @@
             "cardio"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -420,7 +444,8 @@
             "feminino"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "moda-002",
@@ -435,7 +460,8 @@
             "masculino"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "moda-003",
@@ -451,7 +477,8 @@
             "feminino"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "moda-004",
@@ -464,7 +491,8 @@
             "feminino"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "moda-005",
@@ -479,7 +507,8 @@
             "calcados"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "moda-006",
@@ -495,7 +524,8 @@
             "feminino"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -519,7 +549,8 @@
             "decoracao"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "casa-002",
@@ -532,7 +563,8 @@
             "organizacao"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "casa-003",
@@ -547,7 +579,8 @@
             "organizacao"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "casa-004",
@@ -562,7 +595,8 @@
             "decoracao"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "casa-005",
@@ -577,7 +611,8 @@
             "cozinha"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "casa-006",
@@ -592,7 +627,8 @@
             "limpeza"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -618,7 +654,8 @@
             "rosto"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "estetica-002",
@@ -635,7 +672,8 @@
             "importado"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "estetica-003",
@@ -652,7 +690,8 @@
             "feminino"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "estetica-004",
@@ -669,7 +708,8 @@
             "feminino"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "estetica-005",
@@ -686,7 +726,8 @@
             "hidratante"
           ],
           "destaque": true,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -712,7 +753,8 @@
             "saudavel"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "eletrodomesticos-002",
@@ -729,7 +771,8 @@
             "preparo"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "eletrodomesticos-003",
@@ -746,7 +789,8 @@
             "espresso"
           ],
           "destaque": true,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "eletrodomesticos-004",
@@ -763,7 +807,8 @@
             "grill"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "eletrodomesticos-005",
@@ -780,7 +825,26 @@
             "smart"
           ],
           "destaque": true,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
+        },
+        {
+          "id": "pet-002",
+          "nome": "Comedouro automático com timer programável",
+          "preco": 129.9,
+          "preco_original": 169.9,
+          "desconto_pct": 24,
+          "imagem": "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=400&h=400&fit=crop",
+          "link_afiliado": "https://amzn.to/exemplo",
+          "loja": "amazon",
+          "tags": [
+            "cachorro",
+            "gato",
+            "alimentacao"
+          ],
+          "destaque": false,
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -806,7 +870,8 @@
             "best-seller"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "livros-002",
@@ -823,7 +888,8 @@
             "habitos"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "livros-003",
@@ -840,7 +906,8 @@
             "dc"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "livros-004",
@@ -855,7 +922,8 @@
             "best-seller"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "livros-005",
@@ -872,7 +940,8 @@
             "ciencia"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -898,7 +967,8 @@
             "esportivo"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tenis-002",
@@ -915,7 +985,8 @@
             "plataforma"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tenis-003",
@@ -932,7 +1003,8 @@
             "unissex"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tenis-004",
@@ -949,7 +1021,8 @@
             "esportivo"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "tenis-005",
@@ -966,7 +1039,8 @@
             "unissex"
           ],
           "destaque": true,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     },
@@ -992,7 +1066,8 @@
             "pack"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "mercado-002",
@@ -1009,7 +1084,8 @@
             "artesanal"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "mercado-003",
@@ -1026,7 +1102,8 @@
             "castanhas"
           ],
           "destaque": false,
-          "novo": true
+          "novo": true,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "mercado-004",
@@ -1043,7 +1120,8 @@
             "saudavel"
           ],
           "destaque": false,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         },
         {
           "id": "mercado-005",
@@ -1060,7 +1138,8 @@
             "importado"
           ],
           "destaque": true,
-          "novo": false
+          "novo": false,
+          "createdAt": "2026-04-03T15:50:04.949Z"
         }
       ]
     }
