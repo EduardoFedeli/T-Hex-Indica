@@ -1,12 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import FilterChip from '@/components/FilterChip'
 import PriceRangeSlider from '@/components/PriceRangeSlider'
 import type { FiltrosProduto, Loja } from '@/types'
-import { SlidersHorizontal } from 'lucide-react'
 
 const LOJAS: Loja[] = ['amazon', 'shopee', 'magalu', 'mercadolivre', 'americanas', 'casasbahia', 'centauro', 'aliexpress']
 const LOJA_LABEL: Record<Loja, string> = {
@@ -21,13 +19,13 @@ interface FilterPanelProps {
   tagsDaCategoria: string[]
   precoMaxTotal: number
   cor: string
-  // CORREÇÃO TS: Prop adicionada para receber o array dinâmico do CategoriaContent
   marketplacesDisponiveis: string[] 
 }
 
-function FilterBody({ filtros, onFiltrosChange, tagsDaCategoria, precoMaxTotal, cor, marketplacesDisponiveis }: FilterPanelProps) {
+export default function FilterPanel({ filtros, onFiltrosChange, tagsDaCategoria, precoMaxTotal, cor, marketplacesDisponiveis }: FilterPanelProps) {
   const precoMin = filtros.precoMin ?? 0
   const precoMax = filtros.precoMax ?? precoMaxTotal
+  const [buscaTag, setBuscaTag] = useState('')
 
   function toggleLoja(loja: Loja) {
     const current = filtros.lojas ?? []
@@ -45,107 +43,102 @@ function FilterBody({ filtros, onFiltrosChange, tagsDaCategoria, precoMaxTotal, 
     onFiltrosChange({ ...filtros, tags: next.length > 0 ? next : undefined })
   }
 
-  // UX FIX: Filtra o array master de lojas (LOJAS) para retornar apenas as que vieram da API/banco
   const lojasAtivas = LOJAS.filter(loja => marketplacesDisponiveis.includes(loja))
 
   return (
-    <div className="flex flex-col gap-8 p-6">
-      <div>
-        <p className="mb-4 text-[11px] font-black uppercase tracking-[0.15em] text-[#A1A1AA]">Faixa de preço</p>
-        <PriceRangeSlider
-          min={0}
-          max={precoMaxTotal}
-          value={[precoMin, precoMax]}
-          onChange={([min, max]) =>
-            onFiltrosChange({
-              ...filtros,
-              precoMin: min > 0 ? min : undefined,
-              precoMax: max < precoMaxTotal ? max : undefined,
-            })
-          }
-          cor={cor}
-        />
+    // O contêiner pai controla o layout, o FilterPanel apenas renderiza o conteúdo
+    <div className="flex flex-col gap-8 bg-[#1A1A24] md:border md:border-[#2A2A35] rounded-3xl md:shadow-sm">
+      
+      {/* Título (Só aparece no Desktop, pois no Mobile o SheetTitle já faz isso) */}
+      <div className="hidden md:block px-6 py-5 border-b border-[#2A2A35]">
+        <p className="text-sm font-black uppercase tracking-widest text-white">Filtros</p>
       </div>
 
-      {/* Condicional para esconder a seção inteira se não houver lojas */}
-      {lojasAtivas.length > 0 && (
+      <div className="flex flex-col gap-8 p-6 md:pt-6 pt-0">
         <div>
-          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.15em] text-[#A1A1AA]">Marketplace</p>
-          <div className="flex flex-wrap gap-2">
-            {lojasAtivas.map(loja => (
-              <FilterChip
-                key={loja}
-                label={LOJA_LABEL[loja]}
-                ativo={(filtros.lojas ?? []).includes(loja)}
-                cor={cor}
-                onClick={() => toggleLoja(loja)}
-              />
-            ))}
-          </div>
+          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.15em] text-[#A1A1AA]">Faixa de preço</p>
+          <PriceRangeSlider
+            min={0}
+            max={precoMaxTotal}
+            value={[precoMin, precoMax]}
+            onChange={([min, max]) =>
+              onFiltrosChange({
+                ...filtros,
+                precoMin: min > 0 ? min : undefined,
+                precoMax: max < precoMaxTotal ? max : undefined,
+              })
+            }
+            cor={cor}
+          />
         </div>
-      )}
 
-      {tagsDaCategoria.length > 0 && (
-        <div>
-          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.15em] text-[#A1A1AA]">Filtrar por</p>
-          <div className="flex flex-wrap gap-2">
-            {tagsDaCategoria.map(tag => (
-              <FilterChip
-                key={tag}
-                label={tag}
-                ativo={(filtros.tags ?? []).includes(tag)}
-                cor={cor}
-                onClick={() => toggleTag(tag)}
-              />
-            ))}
+        {lojasAtivas.length > 0 && (
+          <div>
+            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.15em] text-[#A1A1AA]">Marketplace</p>
+            <div className="flex flex-wrap gap-2">
+              {lojasAtivas.map(loja => (
+                <FilterChip
+                  key={loja}
+                  label={LOJA_LABEL[loja]}
+                  ativo={(filtros.lojas ?? []).includes(loja)}
+                  cor={cor}
+                  onClick={() => toggleLoja(loja)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <Button
-        variant="outline"
-        onClick={() => onFiltrosChange({})}
-        className="mt-2 w-full h-11 border-[#2A2A35] bg-transparent text-[#A1A1AA] hover:bg-[#2A2A35] hover:text-white transition-all rounded-xl font-bold text-xs"
-      >
-        Limpar filtros
-      </Button>
+        {tagsDaCategoria.length > 0 && (
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[11px] font-black uppercase tracking-[0.15em] text-[#A1A1AA]">
+                Filtrar por ({tagsDaCategoria.length})
+              </p>
+            </div>
+
+            {/* INPUT DE BUSCA DE TAGS */}
+            <input
+              type="text"
+              placeholder="Buscar característica..."
+              value={buscaTag}
+              onChange={(e) => setBuscaTag(e.target.value)}
+              className="w-full h-10 mb-4 rounded-xl bg-[#0F0F13] border border-[#2A2A35] px-4 text-xs text-white placeholder-[#A1A1AA] focus:border-[#22C55E] focus:outline-none focus:ring-1 focus:ring-[#22C55E] transition-all"
+              style={{ '--tw-ring-color': cor, borderColor: buscaTag ? cor : '' } as React.CSSProperties}
+            />
+
+            {/* CONTÊINER COM SCROLL E LIMITE DE ALTURA */}
+            <div className="flex flex-wrap gap-2 max-h-[220px] overflow-y-auto pr-2 pb-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2A2A35] [&::-webkit-scrollbar-thumb]:rounded-full">
+              {tagsDaCategoria
+                .filter(tag => tag.toLowerCase().includes(buscaTag.toLowerCase()))
+                .map(tag => (
+                  <FilterChip
+                    key={tag}
+                    label={tag}
+                    ativo={(filtros.tags ?? []).includes(tag)}
+                    cor={cor}
+                    onClick={() => toggleTag(tag)}
+                  />
+              ))}
+              
+              {/* Mensagem se não encontrar nenhuma tag */}
+              {tagsDaCategoria.filter(tag => tag.toLowerCase().includes(buscaTag.toLowerCase())).length === 0 && (
+                <p className="text-xs text-[#A1A1AA] w-full text-center py-2">
+                  Nenhum filtro encontrado.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <Button
+          variant="outline"
+          onClick={() => onFiltrosChange({})}
+          className="mt-2 w-full h-11 border-[#2A2A35] bg-transparent text-[#A1A1AA] hover:bg-[#2A2A35] hover:text-white transition-all rounded-xl font-bold text-xs"
+        >
+          Limpar filtros
+        </Button>
+      </div>
     </div>
-  )
-}
-
-export default function FilterPanel(props: FilterPanelProps) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <>
-      <div className="md:hidden fixed bottom-6 right-6 z-40">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button
-              style={{ backgroundColor: props.cor || '#F97316' }}
-              className="rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.4)] h-12 px-5 font-bold text-white flex items-center gap-2 hover:scale-105 transition-all"
-            >
-              <SlidersHorizontal size={18} />
-              Filtrar
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="bg-[#1A1A24] border-t border-[#2A2A35] rounded-t-3xl max-h-[85vh] overflow-y-auto px-0">
-            <SheetHeader className="px-6 pt-6 pb-2 border-b border-[#2A2A35]">
-              <SheetTitle className="text-white text-lg font-black text-left">Filtros</SheetTitle>
-            </SheetHeader>
-            <FilterBody {...props} />
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      <div className="hidden md:block w-[280px] shrink-0">
-        <div className="sticky top-24 rounded-3xl bg-[#1A1A24] border border-[#2A2A35] overflow-hidden shadow-sm">
-          <div className="px-6 py-5 border-b border-[#2A2A35]">
-            <p className="text-sm font-black uppercase tracking-widest text-white">Filtros</p>
-          </div>
-          <FilterBody {...props} />
-        </div>
-      </div>
-    </>
   )
 }

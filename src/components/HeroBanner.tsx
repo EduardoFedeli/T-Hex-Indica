@@ -26,10 +26,11 @@ export default function HeroBanner() {
             O T-Hex vasculha a internet diariamente para trazer produtos com custo-benefício imbatível da Amazon, Shopee e Mercado Livre.
           </p>
 
-          <Link
-            href="#destaques"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#22C55E] px-8 py-4 text-sm font-black text-[#0F0F13] shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:bg-[#1ea850] hover:scale-105 hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] transition-all duration-300"
-          >
+          {/* BOTÃO PRINCIPAL */}
+            <Link 
+              href="/explorar" 
+              className="inline-flex items-center gap-2 bg-[#22C55E] text-[#0F0F13] px-6 py-3 rounded-full font-black text-sm hover:brightness-110 transition-all shadow-[0_4px_14px_rgba(34,197,94,0.3)]"
+            >
             Começar a Caçada →
           </Link>
         </div>

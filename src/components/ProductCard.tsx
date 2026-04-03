@@ -23,8 +23,12 @@ export default function ProductCard({ produto, categoria }: ProductCardProps) {
       href={produto.link_afiliado}
       target="_blank"
       rel="noopener noreferrer sponsored"
-      className="group flex flex-col overflow-hidden rounded-[24px] bg-[#1A1A24] border border-[#2A2A35] transition-all duration-300 hover:border-[#22C55E]/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative"
+      className="group flex flex-col overflow-hidden rounded-[24px] bg-[#1A1A24] border border-[#2A2A35] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative"
+      // Recoloquei o var(--cat-color)
+      style={{ '--cat-color': categoria.cor || '#22C55E' } as React.CSSProperties}
     >
+      {/* Borda que acende na cor da categoria */}
+      <div className="absolute inset-0 rounded-[24px] border-2 border-transparent group-hover:border-[var(--cat-color)] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20" />
       {/* Thumb 1:1 */}
       <div className="relative aspect-square w-full overflow-hidden bg-[#0F0F13]">
         {produto.imagem ? (
@@ -41,27 +45,31 @@ export default function ProductCard({ produto, categoria }: ProductCardProps) {
           </div>
         )}
 
-        {/* Container de Badges */}
-        <div className="absolute inset-x-3 top-3 flex flex-col gap-1.5 items-end pointer-events-none">
-          {produto.destaque && (
-            <span className="rounded-md bg-[#FFD700] px-2 py-1 text-[10px] font-black uppercase text-[#0F0F13] shadow-lg self-start absolute left-0">
-              ★ Destaque
-            </span>
-          )}
-          {/* TAG DE DESCONTO - AGORA EM VERMELHO CHAMATIVO */}
-          {produto.desconto_pct && produto.desconto_pct > 0 && (
-            <span 
-              className="rounded-md px-2 py-1 text-[11px] font-black text-white shadow-lg"
-              style={{ backgroundColor: strikingRed }}
-            >
-              -{produto.desconto_pct}%
-            </span>
-          )}
-          {produto.novo && (
-            <span className="rounded-md bg-[#22D3EE] px-2 py-1 text-[10px] font-black uppercase text-[#0F0F13] shadow-lg">
-              Novo
-            </span>
-          )}
+        {/* Container de Badges Refatorado para Mobile */}
+        <div className="absolute inset-x-2 top-2 md:inset-x-3 md:top-3 flex justify-between items-start pointer-events-none z-10">
+          
+          {/* Lado Esquerdo (Destaque) */}
+          <div className="flex flex-col items-start max-w-[50%]">
+            {produto.destaque && (
+              <span className="rounded-md bg-[#FFD700] px-1.5 py-0.5 md:px-2 md:py-1 text-[8px] md:text-[10px] font-black uppercase text-[#0F0F13] shadow-lg">
+                ★Destaque
+              </span>
+            )}
+          </div>
+
+          {/* Lado Direito (Desconto e Novo) */}
+          <div className="flex flex-col gap-1 md:gap-1.5 items-end max-w-[50%]">
+            {produto.desconto_pct && produto.desconto_pct > 0 && (
+              <span className="rounded-md bg-[#FF3838] px-1.5 py-0.5 md:px-2 md:py-1 text-[9px] md:text-[11px] font-black text-white shadow-lg">
+                -{produto.desconto_pct}%
+              </span>
+            )}
+            {produto.novo && (
+              <span className="rounded-md bg-[#22D3EE] px-1.5 py-0.5 md:px-2 md:py-1 text-[8px] md:text-[10px] font-black uppercase text-[#0F0F13] shadow-lg">
+                Novo
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

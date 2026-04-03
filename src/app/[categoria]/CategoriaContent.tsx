@@ -2,11 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import type { Categoria, FiltrosProduto } from '@/types'
-import { getProdutos } from '@/lib/produtos'
 import ProductCard from '@/components/ProductCard'
 import FilterPanel from '@/components/FilterPanel'
 import CategoryGrid from '@/components/CategoryGrid'
-import { Button } from '@/components/ui/button' // Nova importação para o Empty State
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -14,6 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Filter } from 'lucide-react'
 
 interface CategoriaContentProps {
   cat: Categoria
@@ -53,8 +60,29 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
   const tags = useMemo(() => getTagsDaCategoria(produtosDaCategoria), [produtosDaCategoria])
 
   const produtosFiltradosEOrdenados = useMemo(() => {
-    let filtrados = getProdutos(cat.slug, filtros) || []
+    // 1. FILTRAGEM LOCAL NA MEMÓRIA
+    let filtrados = produtosDaCategoria.filter((p: any) => {
+      // Filtro de Preço
+      if (filtros.precoMin && p.preco < filtros.precoMin) return false
+      if (filtros.precoMax && p.preco > filtros.precoMax) return false
+      
+      // Filtro de Loja
+      if (filtros.lojas && filtros.lojas.length > 0) {
+        const pLoja = (p.marketplace || p.loja || '').toLowerCase()
+        if (!filtros.lojas.includes(pLoja)) return false
+      }
+      
+      // Filtro de Tags
+      if (filtros.tags && filtros.tags.length > 0) {
+        if (!p.tags) return false
+        // Se o usuário selecionou tags, o produto precisa ter pelo menos uma delas
+        if (!filtros.tags.some(t => p.tags.includes(t))) return false
+      }
+      
+      return true
+    })
 
+    // 2. ORDENAÇÃO
     return filtrados.sort((a: any, b: any) => {
       switch (ordenacao) {
         case 'menor-preco':
@@ -72,12 +100,18 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
           return 0
       }
     })
-  }, [cat.slug, filtros, ordenacao])
+  }, [produtosDaCategoria, filtros, ordenacao])
+
+  // Cor principal
+  const catColor = cat?.cor || '#22C55E'
 
   if (!cat) return <div className="p-8 text-white text-center">Carregando departamento...</div>
 
+  // Quantidade de filtros ativos (para mostrar uma bolinha vermelha no ícone)
+  const filtrosAtivos = Object.keys(filtros).length
+
   return (
-    <div className="w-full pb-24 space-y-8 mt-4">
+    <div className="w-full pb-24 space-y-8 mt-4 relative">
       <div className="py-6 mb-2">
         <CategoryGrid categorias={todasCategorias} slugAtivo={cat.slug} />
       </div>
@@ -85,14 +119,14 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
       <section className="relative overflow-hidden rounded-3xl bg-[#1A1A24] border border-[#2A2A35] px-6 py-8 md:px-10 flex items-center justify-between shadow-lg">
         <div
           className="absolute -right-10 -top-20 h-64 w-64 rounded-full opacity-10 blur-3xl pointer-events-none"
-          style={{ backgroundColor: cat.cor || '#F97316' }}
+          style={{ backgroundColor: catColor }}
         />
         
         <div className="relative z-10">
           <p className="mb-1 text-[10px] font-black uppercase tracking-widest text-[#A1A1AA]">
             Departamento
           </p>
-          <h1 className="text-3xl md:text-4xl font-black leading-tight" style={{ color: cat.cor || '#F97316' }}>
+          <h1 className="text-3xl md:text-4xl font-black leading-tight" style={{ color: catColor }}>
             {cat.nome}
           </h1>
           <p className="text-sm text-[#A1A1AA] font-medium">{cat.descricao}</p>
@@ -104,26 +138,29 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
       </section>
 
       <div className="flex flex-col md:flex-row gap-8">
-        <aside className="hidden md:block w-[260px] shrink-0">
+        
+        {/* Painel Esquerdo (Apenas Desktop) */}
+        <aside className="hidden md:block w-[260px] shrink-0 sticky top-28 h-fit">
           <FilterPanel
             filtros={filtros}
             onFiltrosChange={setFiltros}
             tagsDaCategoria={tags}
             precoMaxTotal={precoMaxTotal}
-            cor={cat.cor || '#F97316'}
+            cor={catColor}
             marketplacesDisponiveis={marketplacesDisponiveis} 
           />
         </aside>
 
+        {/* Listagem de Produtos */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-[#1A1A24]/60 p-4 rounded-2xl border border-[#2A2A35]">
             <h2 className="text-lg font-bold text-white flex items-center gap-3">
-              <span className="w-1.5 h-5 rounded-full" style={{ backgroundColor: cat.cor }} />
+              <span className="w-1.5 h-5 rounded-full" style={{ backgroundColor: catColor }} />
               {produtosFiltradosEOrdenados.length} achados
             </h2>
 
             <Select value={ordenacao} onValueChange={setOrdenacao}>
-              <SelectTrigger className="w-[180px] bg-[#0F0F13] border-[#2A2A35] text-white focus:ring-1 transition-colors rounded-xl font-medium outline-none" style={{ '--tw-ring-color': cat.cor || '#F97316' } as React.CSSProperties}>
+              <SelectTrigger className="w-[180px] bg-[#0F0F13] border-[#2A2A35] text-white focus:ring-1 transition-colors rounded-xl font-medium outline-none" style={{ '--tw-ring-color': catColor } as React.CSSProperties}>
                 <SelectValue placeholder="Ordenar por" />
               </SelectTrigger>
               <SelectContent className="bg-[#1A1A24] border-[#2A2A35] text-white rounded-xl">
@@ -136,7 +173,7 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
             </Select>
           </div>
 
-          {/* RENDERIZAÇÃO CONDICIONAL: Grid de Produtos OU Empty State */}
+          {/* Grid ou Empty State */}
           {produtosFiltradosEOrdenados.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {produtosFiltradosEOrdenados.map(produto => (
@@ -152,8 +189,8 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
               </p>
               <Button
                 onClick={() => setFiltros({})}
-                style={{ backgroundColor: cat.cor || '#F97316' }}
-                className="text-white font-bold px-6 h-11 rounded-xl shadow-lg hover:scale-105 transition-all"
+                style={{ backgroundColor: catColor, color: '#0F0F13' }}
+                className="font-black px-6 h-11 rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.3)] hover:scale-105 transition-all"
               >
                 Limpar filtros
               </Button>
@@ -161,6 +198,47 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
           )}
         </div>
       </div>
+
+      {/* FAB + Drawer de Filtro (Mobile) */}
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <button
+              className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-transform hover:scale-105 active:scale-95"
+              style={{ backgroundColor: catColor }}
+            >
+              <Filter className="text-[#0F0F13]" size={24} strokeWidth={2.5} />
+              {filtrosAtivos > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF3838] text-[10px] font-black text-white border-2 border-[#0F0F13]">
+                  {filtrosAtivos}
+                </span>
+              )}
+            </button>
+          </SheetTrigger>
+          
+          <SheetContent side="right" className="w-[85vw] bg-[#1A1A24] border-l border-[#2A2A35] p-0 flex flex-col h-full">
+            <SheetHeader className="p-5 border-b border-[#2A2A35] bg-[#0F0F13]">
+              <SheetTitle className="text-left text-white flex items-center gap-2 font-black">
+                <Filter size={20} style={{ color: catColor }} />
+                Filtros
+              </SheetTitle>
+            </SheetHeader>
+            
+            {/* Corpo rolável com o FilterPanel */}
+            <div className="flex-1 overflow-y-auto p-5">
+              <FilterPanel
+                filtros={filtros}
+                onFiltrosChange={setFiltros}
+                tagsDaCategoria={tags}
+                precoMaxTotal={precoMaxTotal}
+                cor={catColor}
+                marketplacesDisponiveis={marketplacesDisponiveis} 
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
     </div>
   )
 }
