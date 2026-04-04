@@ -31,7 +31,7 @@ export default function HomePage() {
           
           <div className="flex items-center justify-between mb-10 relative z-10">
             <div className="flex items-center gap-3">
-              <span className="text-3xl">🔥</span>
+              <span className="text-3xl">🏆</span>
               <h2 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase">Em destaque</h2>
             </div>
             <button className="group flex items-center gap-2 text-xs font-black text-[#22C55E] border border-[#22C55E]/30 px-4 py-2 rounded-full hover:bg-[#22C55E] hover:text-[#0F0F13] transition-all duration-300">
@@ -61,7 +61,7 @@ export default function HomePage() {
 
           <div className="flex items-center justify-between mb-10 relative z-10">
             <div className="flex items-center gap-3">
-              <span className="text-3xl">💰</span>
+              <span className="text-3xl">🔥</span>
               <h2 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase">Melhores ofertas</h2>
             </div>
             <button className="group flex items-center gap-2 text-xs font-black text-[#22C55E] border border-[#22C55E]/30 px-4 py-2 rounded-full hover:bg-[#22C55E] hover:text-[#0F0F13] transition-all duration-300">
