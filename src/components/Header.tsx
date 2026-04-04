@@ -7,6 +7,12 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import data from '@/data/produtos.json'
 import { formatarPreco } from '@/lib/produtos'
 
+// Função para remover acentos
+const removeAcentos = (str: string) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+
 export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
@@ -38,10 +44,16 @@ export default function Header() {
   // 2. Filtrar produtos baseado no que o usuário digita (mínimo 2 letras)
   const resultadosBusca = useMemo(() => {
     if (busca.trim().length < 2) return []
-    const termo = busca.toLowerCase()
+    // Removemos os acentos do termo da busca
+    const termo = removeAcentos(busca.toLowerCase())
     return todosProdutos
-      .filter(p => p.nome.toLowerCase().includes(termo) || p.loja.toLowerCase().includes(termo))
-      .slice(0, 5) // Mostra no máximo 5 resultados no preview
+      .filter(p => {
+        // Removemos acentos do nome e da loja antes de comparar
+        const nomeSemAcento = removeAcentos(p.nome.toLowerCase());
+        const lojaSemAcento = removeAcentos(p.loja.toLowerCase());
+        return nomeSemAcento.includes(termo) || lojaSemAcento.includes(termo);
+      })
+      .slice(0, 5)
   }, [busca, todosProdutos])
 
   // 3. Fechar dropdown ao clicar fora

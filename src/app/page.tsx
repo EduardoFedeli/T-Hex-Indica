@@ -45,10 +45,11 @@ export default function HomePage() {
               const categoriaDoProduto = categorias.find(c => c.slug === (produto as any).categoriaSlug) || categorias[0];
               return (
                 <ProductCard 
-                  key={produto.id} 
-                  produto={produto} 
-                  categoria={categoriaDoProduto} 
-                />
+                key={produto.id} 
+                produto={produto} 
+                categoria={getCat((produto as any).categoriaSlug)} 
+                brandColorOnly={true} // Força a cor verde T-Hex
+              />
               );
             })}
           </div>

@@ -177,7 +177,12 @@ export default function CategoriaContent({ cat, todasCategorias }: CategoriaCont
           {produtosFiltradosEOrdenados.length > 0 ? (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {produtosFiltradosEOrdenados.map(produto => (
-                <ProductCard key={produto.id} produto={produto} categoria={cat} />
+                <ProductCard 
+                  key={produto.id} 
+                  produto={produto} 
+                  categoria={cat}
+                  // Não passe brandColorOnly, assim ele usa cat.cor
+                />
               ))}
             </div>
           ) : (

@@ -5,6 +5,7 @@ import { formatarPreco } from '@/lib/produtos'
 interface ProductCardProps {
   produto: Produto
   categoria: Categoria
+  brandColorOnly?: boolean // Prop para forçar a cor verde na Home
 }
 
 const LOJA_LABEL: Record<string, string> = {
@@ -13,10 +14,11 @@ const LOJA_LABEL: Record<string, string> = {
   casasbahia: 'Casas Bahia', centauro: 'Centauro', aliexpress: 'AliExpress',
 }
 
-export default function ProductCard({ produto, categoria }: ProductCardProps) {
-  // Cor fixa da marca para consistência
-  const brandGreen = '#22C55E'
-  const strikingRed = '#F97316' // Vermelho chamativo para descontos
+export default function ProductCard({ produto, categoria, brandColorOnly }: ProductCardProps) {
+  // A LÓGICA MESTRA DE CORES: 
+  // Se for brandColorOnly (Home), tudo é verde (#22C55E).
+  // Se não (Página de Categoria ou Explorar), usa a cor da categoria (ou verde como fallback).
+  const baseColor = brandColorOnly ? '#22C55E' : (categoria.cor || '#22C55E')
 
   return (
     <a
@@ -24,11 +26,12 @@ export default function ProductCard({ produto, categoria }: ProductCardProps) {
       target="_blank"
       rel="noopener noreferrer sponsored"
       className="group flex flex-col overflow-hidden rounded-[24px] bg-[#1A1A24] border border-[#2A2A35] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative"
-      // Recoloquei o var(--cat-color)
-      style={{ '--cat-color': categoria.cor || '#22C55E' } as React.CSSProperties}
+      // Injeta a cor certa (Verde ou da Categoria) como variável CSS para o Tailwind
+      style={{ '--cat-color': baseColor } as React.CSSProperties}
     >
-      {/* Borda que acende na cor da categoria */}
+      {/* Borda que acende na cor da variável --cat-color */}
       <div className="absolute inset-0 rounded-[24px] border-2 border-transparent group-hover:border-[var(--cat-color)] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20" />
+      
       {/* Thumb 1:1 */}
       <div className="relative aspect-square w-full overflow-hidden bg-[#0F0F13]">
         {produto.imagem ? (
@@ -52,7 +55,7 @@ export default function ProductCard({ produto, categoria }: ProductCardProps) {
           <div className="flex flex-col items-start max-w-[50%]">
             {produto.destaque && (
               <span className="rounded-md bg-[#FFD700] px-1.5 py-0.5 md:px-2 md:py-1 text-[8px] md:text-[10px] font-black uppercase text-[#0F0F13] shadow-lg">
-                ★Destaque
+                ★ Destaque
               </span>
             )}
           </div>
@@ -79,8 +82,8 @@ export default function ProductCard({ produto, categoria }: ProductCardProps) {
           {LOJA_LABEL[produto.loja] ?? produto.loja}
         </p>
         
-        {/* NOME DO PRODUTO - HOVER AGORA É VERDE */}
-        <p className="flex-1 line-clamp-2 text-sm font-bold leading-snug text-white group-hover:text-[#22C55E] transition-colors mb-4 h-[2.5em]">
+        {/* NOME DO PRODUTO (Hover usa a variável --cat-color) */}
+        <p className="flex-1 line-clamp-2 text-sm font-bold leading-snug text-white group-hover:text-[var(--cat-color)] transition-colors mb-4 h-[2.5em]">
           {produto.nome}
         </p>
         
@@ -90,15 +93,19 @@ export default function ProductCard({ produto, categoria }: ProductCardProps) {
               {formatarPreco(produto.preco_original)}
             </p>
           )}
-          {/* PREÇO - AGORA SEMPRE VERDE T-HEX PARA MATAR O LARANJA */}
-          <p className="text-xl font-black leading-none tracking-tight text-[#22C55E]">
+          {/* PREÇO (Usa a cor base dinamicamente via style) */}
+          <p className="text-xl font-black leading-none tracking-tight" style={{ color: baseColor }}>
             {formatarPreco(produto.preco)}
           </p>
         </div>
 
-        {/* Botão CTA */}
+        {/* Botão VER OFERTA (Fundo e Sombra acompanham a cor base dinamicamente) */}
         <div
-          className="w-full rounded-xl py-3.5 text-center text-[11px] font-black text-[#0F0F13] transition-all bg-[#22C55E] group-hover:brightness-110 flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(34,197,94,0.3)]"
+          className="w-full rounded-xl py-3.5 text-center text-[11px] font-black text-[#0F0F13] transition-all group-hover:brightness-110 flex items-center justify-center gap-2"
+          style={{ 
+            backgroundColor: baseColor,
+            boxShadow: `0 4px 14px ${baseColor}4D` 
+          }}
         >
           VER OFERTA
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>

@@ -10,9 +10,13 @@ interface CategoryGridProps {
 }
 
 export default function CategoryGrid({ categorias, slugAtivo }: CategoryGridProps) {
+  // Cria uma cópia do array e ordena alfabeticamente pelo nome da categoria
+  const categoriasOrdenadas = [...categorias].sort((a, b) => a.nome.localeCompare(b.nome))
+
   return (
     <div className="flex flex-nowrap lg:justify-center gap-4 px-4 md:px-4 pt-4 pb-6 overflow-x-auto overflow-y-visible snap-x snap-mandatory scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      {categorias.map(cat => {
+      {/* Troque "categorias.map" por "categoriasOrdenadas.map" */}
+      {categoriasOrdenadas.map(cat => {
         const ativo = cat.slug === slugAtivo
         const borderSecondary = '#2A2A35'
 

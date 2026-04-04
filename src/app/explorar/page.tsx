@@ -12,13 +12,21 @@ export const metadata: Metadata = {
 export default function ExplorarPage() {
   const categoriasReais = getCategorias()
   
-  // 1. Extraímos todos os produtos de todas as categorias
-  const todosProdutos = categoriasReais.flatMap(c => 
+  // 1. Extraímos todos os produtos e REMOVEMOS DUPLICATAS
+  const todosProdutosBrutos = categoriasReais.flatMap(c => 
     c.produtos.map(p => ({ ...p, categoriaSlug: c.slug }))
   )
+  
+  const unicos = new Map()
+  todosProdutosBrutos.forEach(p => {
+    if (!unicos.has(p.id)) {
+      unicos.set(p.id, p)
+    }
+  })
+  const produtosUnicos = Array.from(unicos.values())
 
-  // 2. Embaralhamos os produtos (Shuffle) para sempre parecer fresco
-  const produtosMisturados = [...todosProdutos].sort(() => Math.random() - 0.5)
+  // 2. Embaralhamos os produtos únicos para sempre parecer fresco
+  const produtosMisturados = [...produtosUnicos].sort(() => Math.random() - 0.5)
 
   // 3. Criamos uma categoria "Fantasma" apenas para alimentar o componente
   const categoriaExplorar: Categoria = {
