@@ -70,7 +70,7 @@ export default function Header() {
         {/* LOGO DINÂMICO */}
         <Link href="/" className="flex items-center gap-3 shrink-0 transition-transform hover:scale-105">
           <div className="relative w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
-            <Image src="/assets/mascot/Icone3.png" alt="T-Hex" fill sizes="86px" className="object-contain" />
+            <Image src="/assets/mascot/icone3.png" alt="T-Hex" fill sizes="86px" className="object-contain" />
           </div>
           <span className="hidden sm:block text-2xl font-black tracking-tight text-white uppercase">
             <span style={{ color: brandColor }} className="transition-colors duration-500">T-HEX</span> INDICA
