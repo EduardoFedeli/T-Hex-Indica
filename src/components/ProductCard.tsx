@@ -32,14 +32,15 @@ export default function ProductCard({ produto, categoria, brandColorOnly }: Prod
       {/* Borda que acende na cor da variável --cat-color */}
       <div className="absolute inset-0 rounded-[24px] border-2 border-transparent group-hover:border-[var(--cat-color)] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20" />
       
-      {/* Thumb 1:1 */}
-      <div className="relative aspect-square w-full overflow-hidden bg-[#0F0F13]">
+      {/* Thumb 1:1 - Mudamos para bg-white para misturar com o fundo padrão de e-commerces */}
+      <div className="relative aspect-square w-full overflow-hidden bg-white">
         {produto.imagem ? (
           <Image
             src={produto.imagem}
             alt={produto.nome}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            // object-contain faz a imagem caber inteira, p-4 dá um respiro (margem) nas bordas
+            className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 50vw, 20vw"
           />
         ) : (
@@ -48,7 +49,7 @@ export default function ProductCard({ produto, categoria, brandColorOnly }: Prod
           </div>
         )}
 
-        {/* Container de Badges Refatorado para Mobile */}
+        {/* Container de Badges */}
         <div className="absolute inset-x-2 top-2 md:inset-x-3 md:top-3 flex justify-between items-start pointer-events-none z-10">
           
           {/* Lado Esquerdo (Destaque) */}
