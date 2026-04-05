@@ -1,125 +1,99 @@
 import { createClient } from '@supabase/supabase-js'
 import { getCategorias, formatarPreco } from '@/lib/produtos'
 import Header from '@/components/Header'
+import HeroBanner from '@/components/HeroBanner'
 import CategoryGrid from '@/components/CategoryGrid'
-import Link from 'next/link'
+import ProductCard from '@/components/ProductCard'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
+export default async function HomePage() {
   const categorias = getCategorias()
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
+  // 1. Busca os produtos reais do Banco de Dados
   const { data: produtosRaw } = await supabase
     .from('produtos')
     .select('*')
     .order('createdAt', { ascending: false })
 
-  const produtos = produtosRaw || []
-  const produtosDestaque = produtos.filter(p => p.destaque)
+  const todosProdutos = produtosRaw || []
+  
+  // 2. Filtra os destaques e ofertas (seguindo a sua lógica original de slice(0, 10))
+  const destaques = todosProdutos.filter(p => p.destaque).slice(0, 10)
+  const ofertas = todosProdutos.filter(p => (p.desconto_pct || 0) > 0).slice(0, 10)
+
+  const getCat = (slug: string) => categorias.find(c => c.slug === slug) || categorias[0]
 
   return (
-    <main className="min-h-screen bg-page-bg text-white">
+    <div className="min-h-screen bg-[#0F0F13] flex flex-col pb-20">
       <Header />
-      
-      <section className="relative pt-20 pb-16 px-4 overflow-hidden bg-[#0A0A0B]">
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase italic">
-            A sua próxima <br />
-            <span className="text-brand">Grande Descoberta</span>
-          </h1>
-          <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-            As melhores ofertas de tecnologia, games e setup selecionadas a dedo.
-          </p>
-          <Link href="#ofertas" className="bg-brand text-black font-black px-8 py-4 rounded-full text-lg hover:scale-105 transition-transform inline-block uppercase">
-            Começar a Caçada →
-          </Link>
-        </div>
-      </section>
 
-      <div className="max-w-7xl mx-auto px-4 -mt-8 relative z-20">
-        <CategoryGrid categorias={categorias} />
-      </div>
+      <main className="w-full max-w-7xl mx-auto px-4 md:px-8 space-y-16 mt-6">
+        
+        <HeroBanner />
 
-      <div id="ofertas" className="max-w-7xl mx-auto px-4 py-16 space-y-20">
-        {produtosDestaque.length > 0 && (
-          <section>
-            <h2 className="text-3xl font-black mb-8 flex items-center gap-3 uppercase tracking-tighter">
-              🏆 Em <span className="text-brand">Destaque</span>
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {produtosDestaque.map(p => (
-                <ProductCard key={p.id} produto={p} categorias={categorias} />
+        {/* Menu de Categorias */}
+        <section>
+          <CategoryGrid categorias={categorias} />
+        </section>
+
+        {/* Seção Destaques - Restaurada com sua Luz e Estilo */}
+        {destaques.length > 0 && (
+          <section className="bg-[#1A1A24]/40 p-8 rounded-[32px] border border-[#2A2A35] shadow-2xl relative overflow-hidden">
+            <div className="absolute -left-20 -top-20 w-64 h-64 bg-[#22C55E]/10 blur-[100px] pointer-events-none" />
+            
+            <div className="flex items-center justify-between mb-10 relative z-10">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">🏆</span>
+                <h2 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase">Em destaque</h2>
+              </div>
+              <button className="group flex items-center gap-2 text-xs font-black text-[#22C55E] border border-[#22C55E]/30 px-4 py-2 rounded-full hover:bg-[#22C55E] hover:text-[#0F0F13] transition-all duration-300">
+                VER TUDO
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {destaques.map(produto => (
+                <ProductCard 
+                  key={produto.id} 
+                  produto={produto} 
+                  categoria={getCat(produto.categoriaSlugs?.[0])} 
+                  brandColorOnly={true} 
+                />
               ))}
             </div>
           </section>
         )}
 
-        <section>
-          <h2 className="text-3xl font-black mb-8 flex items-center gap-3 uppercase tracking-tighter">
-            🔥 Melhores <span className="text-brand">Ofertas</span>
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {produtos.map(p => (
-              <ProductCard key={p.id} produto={p} categorias={categorias} />
+        {/* Seção Ofertas - Restaurada com sua Luz e Estilo */}
+        <section className="bg-[#1A1A24]/40 p-8 rounded-[32px] border border-[#2A2A35] shadow-2xl relative overflow-hidden">
+          <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-[#22C55E]/10 blur-[100px] pointer-events-none" />
+
+          <div className="flex items-center justify-between mb-10 relative z-10">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🔥</span>
+              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase">Melhores ofertas</h2>
+            </div>
+            <button className="group flex items-center gap-2 text-xs font-black text-[#22C55E] border border-[#22C55E]/30 px-4 py-2 rounded-full hover:bg-[#22C55E] hover:text-[#0F0F13] transition-all duration-300">
+              VER TUDO
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {ofertas.map(produto => (
+              <ProductCard 
+                key={produto.id} 
+                produto={produto} 
+                categoria={getCat(produto.categoriaSlugs?.[0])} 
+              />
             ))}
           </div>
         </section>
-      </div>
-    </main>
-  )
-}
 
-function ProductCard({ produto, categorias }: { produto: any, categorias: any[] }) {
-  const slugPrincipal = produto.categoriaSlugs?.[0] || 'geral'
-  const cat = categorias.find(c => c.slug === slugPrincipal)
-  
-  return (
-    <div className="bg-[#1A1A24]/40 border border-[#2A2A35] rounded-2xl overflow-hidden hover:border-brand/50 transition-all group flex flex-col h-full">
-      <div className="aspect-square relative overflow-hidden bg-[#0F0F13]">
-        <img 
-          src={produto.imagem} 
-          alt={produto.nome} 
-          className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" 
-        />
-        {produto.desconto_pct && (
-          <span className="absolute top-3 right-3 bg-brand text-black text-[10px] font-black px-2 py-1 rounded-md shadow-lg">
-            {produto.desconto_pct}% OFF
-          </span>
-        )}
-      </div>
-
-      <div className="p-4 flex flex-col flex-1 gap-3">
-        <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
-          <span className="bg-white/5 px-2 py-1 rounded">{cat?.emoji} {cat?.nome || 'Oferta'}</span>
-        </div>
-
-        <h3 className="font-bold text-sm line-clamp-2 h-10 text-gray-100 group-hover:text-brand transition-colors">
-          {produto.nome}
-        </h3>
-
-        <div className="mt-auto pt-2">
-          <div className="flex flex-col">
-            {(produto.precoOriginal || produto.preco_original) && (
-              <span className="text-xs text-muted-foreground line-through decoration-brand/30">
-                {formatarPreco(produto.precoOriginal || produto.preco_original)}
-              </span>
-            )}
-            <span className="text-xl font-black text-brand tracking-tighter">
-              {formatarPreco(produto.preco)}
-            </span>
-          </div>
-        </div>
-
-        <a 
-          href={produto.linkAfiliado || produto.link_afiliado} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="w-full bg-white/5 hover:bg-brand hover:text-black text-center py-3 rounded-xl text-[11px] font-black transition-all uppercase tracking-widest mt-2"
-        >
-          Ver Oferta
-        </a>
-      </div>
+      </main>
     </div>
   )
 }
