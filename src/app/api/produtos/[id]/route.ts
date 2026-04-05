@@ -6,11 +6,16 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+// EDITAR PRODUTO
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  
   try {
+    // A mágica para resolver o erro de tipo: dar await no params
+    const { id } = await params
     const body = await request.json()
     const { produto, categoriaSlugs } = body
+
     const { data, error } = await supabase.from('produtos').update({
       nome: produto.nome,
       categoriaSlugs: categoriaSlugs,
@@ -23,7 +28,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       destaque: produto.destaque,
       novo: produto.novo,
       tags: produto.tags || []
-    }).eq('id', params.id).select()
+    }).eq('id', id).select()
+
     if (error) throw error
     return NextResponse.json({ ok: true, data })
   } catch (error: any) {
@@ -31,10 +37,13 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+// EXCLUIR PRODUTO
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminAuthenticated())) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  
   try {
-    const { error } = await supabase.from('produtos').delete().eq('id', params.id)
+    const { id } = await params
+    const { error } = await supabase.from('produtos').delete().eq('id', id)
     if (error) throw error
     return NextResponse.json({ ok: true })
   } catch (error: any) {
