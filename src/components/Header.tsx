@@ -27,8 +27,11 @@ export default function Header() {
   // 1. Extrair e REMOVER DUPLICATAS de todos os produtos
   const todosProdutos = useMemo(() => {
     const all = data.categorias.flatMap(c => 
-      c.produtos.map(p => ({ ...p, categoriaSlug: c.slug, categoriaCor: c.cor }))
+      // Adicionamos o 'as any[]' para o TypeScript ignorar o fato de estar vazio
+      (c.produtos as any[]).map(p => ({ ...p, categoriaSlug: c.slug, categoriaCor: c.cor }))
     )
+    
+    // Filtro de unicidade: Mantém apenas 1 produto por ID
     
     // Filtro de unicidade: Mantém apenas 1 produto por ID
     const unicos = new Map()
