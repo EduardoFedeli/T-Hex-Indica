@@ -1,55 +1,39 @@
 import { NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
-import type { ProdutosData } from '@/types'
-import { isAdminAuthenticated } from '@/lib/adminAuth'
+import { createClient } from '@supabase/supabase-js'
 
-const DATA_FILE = path.join(process.cwd(), 'src', 'data', 'produtos.json')
+export async function POST(req: Request) {
+  try {
+    const body = await req.json()
+    const { ids, action } = body
 
-function readData(): ProdutosData {
-  return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8')) as ProdutosData
-}
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return NextResponse.json({ error: 'IDs não fornecidos.' }, { status: 400 })
+    }
 
-function writeData(data: ProdutosData): void {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8')
-}
+    // Inicializa o cliente do Supabase
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
 
-export async function POST(request: Request) {
-  if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    if (action === 'delete') {
+      // Faz o delete em massa no Supabase onde o 'id' do produto estiver dentro da lista de 'ids' recebida
+      const { error } = await supabase
+        .from('produtos')
+        .delete()
+        .in('id', ids)
+
+      if (error) {
+        throw error
+      }
+
+      return NextResponse.json({ success: true, message: `${ids.length} produtos deletados com sucesso.` })
+    }
+
+    return NextResponse.json({ error: 'Ação não suportada.' }, { status: 400 })
+
+  } catch (error: any) {
+    console.error('Erro na operação em lote (bulk):', error)
+    return NextResponse.json({ error: error.message || 'Erro interno do servidor.' }, { status: 500 })
   }
-
-  const body = await request.json() as { ids: string[]; action: 'delete' | 'renew' }
-  const { ids, action } = body
-
-  if (!ids || ids.length === 0) {
-    return NextResponse.json({ error: 'Nenhum ID fornecido' }, { status: 400 })
-  }
-
-  const data = readData()
-  let modificados = 0
-
-  if (action === 'delete') {
-    data.categorias.forEach(cat => {
-      const originalLength = cat.produtos.length
-      cat.produtos = cat.produtos.filter(p => !ids.includes(p.id))
-      modificados += (originalLength - cat.produtos.length)
-    })
-  } else if (action === 'renew') {
-    const novaData = new Date().toISOString()
-    data.categorias.forEach(cat => {
-      cat.produtos.forEach(p => {
-        if (ids.includes(p.id)) {
-          p.createdAt = novaData
-          modificados++
-        }
-      })
-    })
-  }
-
-  if (modificados > 0) {
-    writeData(data)
-  }
-
-  return NextResponse.json({ ok: true, modificados })
 }

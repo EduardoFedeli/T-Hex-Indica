@@ -24,7 +24,7 @@ export default function ProductCard({ produto, categoria, brandColorOnly, forceC
 
   return (
     <a
-      href={produto.linkAfiliado || produto.link_afiliado}
+      href={produto.link_afiliado || '#'}
       target="_blank"
       rel="noopener noreferrer sponsored"
       className="group flex flex-col overflow-hidden rounded-[24px] bg-[#1A1A24] border border-[#2A2A35] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative"
@@ -91,9 +91,9 @@ export default function ProductCard({ produto, categoria, brandColorOnly, forceC
         </p>
         
         <div className="mb-5">
-          {(produto.precoOriginal || produto.preco_original) && (
+          {(produto.preco_original || produto.preco_original) && (
             <p className="text-[11px] text-[#A1A1AA] line-through opacity-60 mb-0.5 font-medium">
-              {formatarPreco(produto.precoOriginal || produto.preco_original || 0)}
+              {formatarPreco(produto.preco_original || produto.preco_original || 0)}
             </p>
           )}
           {/* PREÇO (Usa a cor base dinamicamente via style) */}
