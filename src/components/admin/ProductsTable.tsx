@@ -171,13 +171,13 @@ export default function ProductsTable({ produtos, categorias }: ProductsTablePro
                     className="w-4 h-4 rounded border-border bg-background accent-primary cursor-pointer"
                   />
                 </TableHead>
-                <TableHead className="w-16 text-muted-foreground">Img</TableHead>
+                <TableHead className="w-20 text-muted-foreground">Imagem</TableHead>
                 <TableHead className="font-semibold text-muted-foreground">Nome</TableHead>
                 <TableHead className="font-semibold text-muted-foreground">Categoria</TableHead>
                 <TableHead className="font-semibold text-muted-foreground">Preço</TableHead>
                 <TableHead className="font-semibold text-muted-foreground">Desconto</TableHead>
                 <TableHead className="text-center font-semibold text-muted-foreground">Status</TableHead>
-                <TableHead className="text-right font-semibold text-muted-foreground">Ações</TableHead>
+                <TableHead className="text-right font-semibold text-muted-foreground pr-8">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
