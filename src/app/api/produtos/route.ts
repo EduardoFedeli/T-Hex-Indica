@@ -2,14 +2,22 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { isAdminAuthenticated } from '@/lib/adminAuth'
 
-// BLINDAGEM DE BUILD: Fornece URLs de fallback caso o Vercel tente ler o arquivo sem as env vars injetadas.
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://build-fallback.supabase.co'
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'build-fallback-key'
+// Função resiliente para garantir que a URL sempre seja válida para o compilador
+function getValidSupabaseUrl() {
+  let url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://build-fallback.supabase.co'
+  url = url.trim().replace(/^["']|["']$/g, '') // Remove aspas ou espaços acidentais
+  if (!url.startsWith('http')) {
+    url = `https://${url}`
+  }
+  return url
+}
+
+const supabaseUrl = getValidSupabaseUrl()
+const supabaseServiceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || 'build-fallback-key').trim()
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 export async function POST(request: Request) {
-// ... resto do seu código permanece exatamente igual ...
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
