@@ -110,20 +110,17 @@ export default async function HomePage() {
 }
 
 // Componente Interno para manter consistência visual nos botões
+// Substitua o SeeAllButton antigo por este:
 function SeeAllButton({ href, color }: { href: string, color: string }) {
   return (
     <Link 
       href={href} 
-      className="group flex items-center gap-2 text-[10px] font-black border px-5 py-2.5 rounded-full transition-all duration-300"
-      style={{ color: color, borderColor: `${color}4D` }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = color;
-        e.currentTarget.style.color = '#0F0F13';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = 'transparent';
-        e.currentTarget.style.color = color;
-      }}
+      // Usamos variáveis CSS para injetar a cor dinâmica diretamente nas classes do Tailwind
+      className="group flex items-center gap-2 text-[10px] font-black border px-5 py-2.5 rounded-full transition-all duration-300 text-[var(--btn-color)] border-[var(--btn-border)] hover:bg-[var(--btn-color)] hover:text-[#0F0F13]"
+      style={{ 
+        '--btn-color': color, 
+        '--btn-border': `${color}4D` 
+      } as React.CSSProperties}
     >
       VER TUDO
       <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
