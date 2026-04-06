@@ -8,6 +8,16 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
+// Algoritmo de Fisher-Yates para embaralhar arrays de forma otimizada
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default async function HomePage() {
   const categorias = await getCategorias()
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
@@ -15,11 +25,15 @@ export default async function HomePage() {
   const { data: produtosRaw } = await supabase
     .from('produtos')
     .select('*')
-    .order('createdAt', { ascending: false })
 
   const todosProdutos = produtosRaw || []
-  const destaques = todosProdutos.filter(p => p.destaque).slice(0, 10)
-  const ofertas = todosProdutos.filter(p => (p.desconto_pct || 0) > 0).slice(0, 10)
+
+  // Filtra, embaralha algoritmicamente e só então corta os 10 itens para exibição
+  const destaquesFiltrados = todosProdutos.filter(p => p.destaque)
+  const destaques = shuffleArray(destaquesFiltrados).slice(0, 10)
+
+  const ofertasFiltradas = todosProdutos.filter(p => (p.desconto_pct || 0) > 0)
+  const ofertas = shuffleArray(ofertasFiltradas).slice(0, 10)
 
   const getCat = (slug: string) => categorias.find(c => c.slug === slug) || categorias[0]
 
