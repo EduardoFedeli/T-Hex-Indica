@@ -1,27 +1,30 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// MUDANÇA AQUI: de 'export function middleware' para 'export function proxy'
 export function proxy(request: NextRequest) {
-  // 1. Identifica se a rota é administrativa
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginPage = request.nextUrl.pathname === '/admin/login'
+  const pathname = request.nextUrl.pathname;
+  
+  const isAdminRoute = pathname.startsWith('/admin');
+  const isLoginPage = pathname === '/admin/login';
 
   if (isAdminRoute && !isLoginPage) {
-    // 2. Verifica a existência do cookie de autenticação
-    const authCookie = request.cookies.get('admin_session')
+    const authCookie = request.cookies.get('admin_session');
+    const isValid = authCookie && authCookie.value === process.env.ADMIN_PASSWORD;
 
-    // Se não houver cookie, redireciona para o login
-    if (!authCookie || authCookie.value !== process.env.ADMIN_PASSWORD) {
-      const loginUrl = new URL('/admin/login', request.url)
-      return NextResponse.redirect(loginUrl)
+    // 1. Se não tiver logado, chuta pro login
+    if (!isValid) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+
+    // 2. Se ESTIVER logado e tentar acessar apenas a raiz /admin, joga pro dashboard
+    if (pathname === '/admin') {
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     }
   }
 
-  return NextResponse.next()
+  return NextResponse.next();
 }
 
-// Configura quais caminhos a proteção deve observar
 export const config = {
   matcher: [
     '/admin/:path*', 
