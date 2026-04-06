@@ -1,14 +1,7 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import SupabaseProgressBar from '@/components/admin/SupabaseProgressBar'
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies()
-  if (cookieStore.get('admin_token')?.value !== 'ok') {
-    redirect('/admin')
-  }
-
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-[#0F0F13] text-foreground transition-colors duration-200">
       <AdminSidebar />
