@@ -123,7 +123,7 @@ export default function ProductForm({ categorias = [], produto, onSave, onCancel
       return
     }
 
-    // 1. AUTO-DETECT DA LOJA
+    // 1. AUTO-DETECT DA LOJA (Baseado no seu Banco de Dados, 100% dinâmico)
     let lojaDetectada = ''
     for (const mk of marketplaces) {
       if (mk.dominios) {
@@ -137,47 +137,47 @@ export default function ProductForm({ categorias = [], produto, onSave, onCancel
     }
 
     if (!lojaDetectada) {
-      alert('O link informado não pertence a nenhum Marketplace ativo cadastrado.')
-      return
+      alert('Atenção: O link não bateu com nenhuma loja ativa. Selecione a loja manualmente se quiser continuar.')
     }
 
-    // 2. EXTRAÇÃO DE DADOS (Só deixa passar se for Amazon por enquanto)
-    if (lojaDetectada === 'amazon') {
-      setIsExtracting(true)
-      try {
-        const res = await fetch('/api/scraper', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: linkAfiliado })
-        })
+    // 2. EXTRAÇÃO UNIVERSAL (Qualquer loja ativa passa direto agora!)
+    setIsExtracting(true)
+    try {
+      const res = await fetch('/api/scraper', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: linkAfiliado })
+      })
 
-        const data = await res.json()
+      const data = await res.json()
 
-        if (res.ok) {
-          if (data.nome) setNome(data.nome)
-          if (data.imagem) setImagem(data.imagem)
+      if (res.ok) {
+        if (data.nome) setNome(data.nome)
+        if (data.imagem) setImagem(data.imagem)
 
-          if (data.preco) {
-            setPreco(data.preco.toString())
-            if (data.preco_original) {
-              setPrecoOriginal(data.preco_original.toString())
-              const descCalc = Math.round((1 - (data.preco / data.preco_original)) * 100)
-              setDesconto(descCalc.toString())
-            } else {
-              setPrecoOriginal('')
-              setDesconto('')
-            }
+        if (data.preco) {
+          setPreco(data.preco.toString())
+          if (data.preco_original) {
+            setPrecoOriginal(data.preco_original.toString())
+            const descCalc = Math.round((1 - (data.preco / data.preco_original)) * 100)
+            setDesconto(descCalc.toString())
+          } else {
+            setPrecoOriginal('')
+            setDesconto('')
           }
         } else {
-          alert(`Erro do T-Hex: ${data.error}`)
+           // Se for uma loja desconhecida pelo robô, ele não vai achar o preço, mas traz a imagem e o título.
+           if (lojaDetectada !== 'amazon' && lojaDetectada !== 'mercadolivre') {
+             alert(`Título e Imagem extraídos via Modo Universal! Digite o preço manualmente para a loja: ${lojaDetectada.toUpperCase()}`)
+           }
         }
-      } catch (error) {
-        alert('Falha na comunicação com o robô caçador.')
-      } finally {
-        setIsExtracting(false)
+      } else {
+        alert(`Erro do T-Hex: ${data.error}`)
       }
-    } else {
-      alert(`Loja auto-selecionada: ${lojaDetectada.toUpperCase()}. Robô de extração em construção para esta loja.`)
+    } catch (error) {
+      alert('Falha na comunicação com o robô caçador.')
+    } finally {
+      setIsExtracting(false)
     }
   }
 

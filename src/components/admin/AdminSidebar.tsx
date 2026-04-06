@@ -22,7 +22,7 @@ export default function AdminSidebar() {
     <aside className="sticky top-0 h-screen hidden md:flex w-64 shrink-0 flex-col bg-card border-r border-border px-4 py-6">
       {/* Brand: T-Hex Indica */}
       <Link href="/" className="mb-8 text-2xl font-black text-foreground tracking-tight flex items-center gap-1">
-        <span className="text-primary font-bold">T</span>-Hex Indica
+        <span className="text-primary font-bold">T-Hex</span> Indica
       </Link>
 
       <nav className="flex flex-col gap-2 flex-1">
