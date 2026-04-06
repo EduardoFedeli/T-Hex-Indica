@@ -37,13 +37,13 @@ export default function HeroBanner() {
 
         {/* Mascote T-Hex */}
         <div className="relative w-40 h-40 md:w-56 md:h-56 lg:w-72 lg:h-72 drop-shadow-2xl animate-in fade-in zoom-in duration-1000">
-          <Image 
+          <Image
             src="/assets/mascot/icone4.png" 
-            alt="T-Hex Mascote" 
-            fill 
-            sizes="(max-width: 768px) 192px, (max-width: 1024px) 288px, 384px"
-            className="object-contain"
-            priority
+            alt="Mascote T-Hex Indica"
+            fill
+            priority // Isso aqui resolve o aviso do LCP! (Diz para carregar a imagem imediatamente)
+            sizes="(max-width: 768px) 300px, 500px" // Diz ao navegador o tamanho esperado para economizar banda
+            className="object-contain drop-shadow-2xl animate-in fade-in"
           />
         </div>
         

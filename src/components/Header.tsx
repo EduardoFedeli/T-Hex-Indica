@@ -60,7 +60,14 @@ export default function Header() {
         
         <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0 transition-transform hover:scale-105 group">
           <div className="relative w-10 h-10 sm:w-14 sm:h-14 drop-shadow-md">
-            <Image src="/assets/mascot/icone3.png" alt="Logo" fill className="object-contain" />
+            <Image 
+              src="/assets/mascot/icone3.png" 
+              alt="T-Hex Mascote" 
+              fill
+              // ADICIONE ESSA LINHA ABAIXO:
+              sizes="(max-width: 768px) 100px, 150px" 
+              className="object-contain"
+            />
           </div>
           <span className="hidden lg:block text-2xl font-black text-white uppercase tracking-tighter">
             <span style={{ color: 'var(--brand-color, #22C55E)' }} className="transition-colors duration-500">T-HEX</span> INDICA
