@@ -7,10 +7,19 @@ export interface ScraperResult {
   imagem: string
 }
 
+// Cabeçalhos agressivos
 const HEADERS_NAVEGADOR = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
   'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Connection': 'keep-alive',
+  'Upgrade-Insecure-Requests': '1',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'none',
+  'Sec-Fetch-User': '?1',
+  'Cache-Control': 'max-age=0'
 }
 
 // O Disfarce: Simulamos ser o bot de preview do Facebook/WhatsApp
@@ -45,7 +54,7 @@ export async function rasparProduto(url: string): Promise<ScraperResult> {
   let urlFinal = url;
   let idMlb: string | null = null;
 
-  // 1. BYPASS DE REDES DE AFILIADOS
+  // 1. BYPASS DE REDES DE AFILIADOS (LinkSynergy / Rakuten)
   if (url.includes('linksynergy.com') && url.includes('murl=')) {
     try {
       const urlObj = new URL(url);
@@ -83,24 +92,26 @@ export async function rasparProduto(url: string): Promise<ScraperResult> {
     }
   }
 
-  // 3. RESOLUÇÃO DE ENCURTADORES
-  if (urlFinal.includes('s.shopee') || urlFinal.includes('divulgador.magalu') || urlFinal.includes('amzn.to')) {
-     try {
-       const preFetch = await fetch(urlFinal, { redirect: 'follow', headers: HEADERS_NAVEGADOR });
-       urlFinal = preFetch.url;
-     } catch (e) {}
+  // 3. FETCH ÚNICO E BLINDADO (Resolve tudo numa cajadada só)
+  let res: Response | null = null;
+  let html = '';
+
+  try {
+    // Tenta primeiro como navegador normal e segue a URL (resolve os encurtadores amzn.to, s.shopee automaticamente)
+    res = await fetch(urlFinal, { redirect: 'follow', headers: HEADERS_NAVEGADOR });
+    
+    // Shopee frequentemente retorna 403, 405 ou 503 para bots.
+    if (!res.ok || res.status === 403 || res.status === 503 || res.status === 405) {
+      console.log(`[SCRAPER] Bloqueio detectado (${res.status}). Vestindo disfarce de Social Bot...`);
+      res = await fetch(urlFinal, { redirect: 'follow', headers: HEADERS_SOCIAL_BOT });
+    }
+    
+    urlFinal = res.url; // Atualiza para a URL real redirecionada
+    html = await res.text();
+  } catch (error) {
+    console.error('[SCRAPER] Falha de rede HTTP:', error);
   }
 
-  // 4. EXTRAÇÃO VIA HTML
-  let res = await fetch(urlFinal, { headers: HEADERS_NAVEGADOR });
-  
-  // O PULO DO GATO: Se o site deu 403 (Forbidden) para o nosso bot, nós recarregamos vestindo o disfarce do Facebook
-  if (res.status === 403) {
-    console.log('[SCRAPER] 403 Detectado. Vestindo disfarce de Social Bot...');
-    res = await fetch(urlFinal, { headers: HEADERS_SOCIAL_BOT });
-  }
-
-  const html = await res.text();
   const $ = cheerio.load(html);
   
   let nome = '';
@@ -116,21 +127,14 @@ export async function rasparProduto(url: string): Promise<ScraperResult> {
     preco_original = precos.preco_original;
     
   } else if (urlFinal.includes('magazineluiza.com') || urlFinal.includes('magalu')) {
-    // MAGALU (ATUALIZADO COM PREÇO ORIGINAL)
     nome = $('h1[data-testid="heading-product-title"]').text().trim() || $('meta[property="og:title"]').attr('content') || '';
     imagem = $('meta[property="og:image"]').attr('content') || '';
     
-    // Preço atual
     const precoStr = $('[data-testid="price-value"]').first().text().replace(/[^\d,]/g, '').replace(',', '.');
-    
-    // Preço original: tenta o data-testid oficial, se falhar, pega o primeiro texto tachado <s> do HTML
     let precoOrigStr = $('[data-testid="price-original"]').first().text().replace(/[^\d,]/g, '').replace(',', '.');
-    if (!precoOrigStr) {
-      precoOrigStr = $('s').first().text().replace(/[^\d,]/g, '').replace(',', '.');
-    }
+    if (!precoOrigStr) precoOrigStr = $('s').first().text().replace(/[^\d,]/g, '').replace(',', '.');
     
     if (precoStr) preco = parseFloat(precoStr);
-    
     if (precoOrigStr) {
       const pOrig = parseFloat(precoOrigStr);
       if (pOrig > preco) preco_original = pOrig;
@@ -143,13 +147,16 @@ export async function rasparProduto(url: string): Promise<ScraperResult> {
     if (precoStr) preco = parseFloat(precoStr);
     
   } else if (urlFinal.includes('shopee.')) {
-    nome = $('title').text().replace(' | Shopee Brasil', '').trim() || $('meta[property="og:title"]').attr('content') || '';
-    imagem = $('meta[property="og:image"]').attr('content') || '';
-    const priceMeta = $('meta[name="twitter:data1"]').attr('content');
+    // Shopee Fallbacks: tenta raspar as meta-tags injetadas
+    nome = $('title').text().replace(' | Shopee Brasil', '').trim() || $('meta[property="og:title"]').attr('content') || $('meta[name="twitter:title"]').attr('content') || '';
+    imagem = $('meta[property="og:image"]').attr('content') || $('meta[name="twitter:image"]').attr('content') || '';
+    
+    // As vezes a Shopee injeta o preço em meta tags, se não vier, o preço será zero.
+    const priceMeta = $('meta[name="twitter:data1"]').attr('content') || $('meta[property="product:price:amount"]').attr('content');
     if (priceMeta) preco = parseFloat(priceMeta.replace(/[^\d,]/g, '').replace(',', '.'));
   }
 
-  // 5. FALLBACK EXTREMAMENTE AGRESSIVO PARA NOME E IMAGEM
+  // 4. FALLBACK EXTREMAMENTE AGRESSIVO PARA NOME E IMAGEM
   if (!nome) {
     nome = $('meta[property="og:title"]').attr('content') || $('meta[name="twitter:title"]').attr('content') || $('title').text().trim() || '';
   }
@@ -161,7 +168,6 @@ export async function rasparProduto(url: string): Promise<ScraperResult> {
     console.warn(`[SCRAPER HÍBRIDO] Falha crítica em: ${urlFinal}.`);
   }
 
-  // Retorna o que conseguiu. Se o preço for 0, o form vai deixar o campo em branco para preenchimento manual.
   return { 
     nome: nome || '', 
     preco: preco || 0, 
