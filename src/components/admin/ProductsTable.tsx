@@ -185,8 +185,8 @@ export default function ProductsTable({ produtos, categorias }: ProductsTablePro
             className="h-8 w-full md:w-28 rounded-md border border-[#2A2A35] bg-[#0F0F13] px-2 text-xs text-[#8E8E9F] outline-none"
           >
             <option value="">Todos Status</option>
-            <option value="destaque">Destaques</option>
-            <option value="novo">Novos</option>
+            <option value="destaque">Mais Vendidos</option>
+            <option value="novo">Novidades</option>
           </select>
 
           <Button onClick={aplicarFiltros} className="h-8 px-3 text-xs bg-[#3B82F6] hover:bg-[#3B82F6]/80 text-white w-full md:w-auto shrink-0">
@@ -265,8 +265,8 @@ export default function ProductsTable({ produtos, categorias }: ProductsTablePro
                     </TableCell>
                     <TableCell className="text-center py-3 px-2">
                       <div className="flex gap-1 justify-center">
-                        {p.destaque && <span className="bg-[#F97316]/20 text-[#F97316] text-[9px] font-bold px-1.5 py-0.5 rounded">Dest</span>}
-                        {p.novo && <span className="bg-[#3B82F6]/20 text-[#3B82F6] text-[9px] font-bold px-1.5 py-0.5 rounded">Novo</span>}
+                        {p.destaque && <span className="bg-[#22C55E]/20 text-[#22C55E] text-[9px] font-bold px-1.5 py-0.5 rounded">🏆 Top</span>}
+                        {p.novo && <span className="bg-[#F97316]/20 text-[#F97316] text-[9px] font-bold px-1.5 py-0.5 rounded">🔥 New</span>}
                       </div>
                     </TableCell>
                     <TableCell className="text-right py-3 px-2 pr-4">

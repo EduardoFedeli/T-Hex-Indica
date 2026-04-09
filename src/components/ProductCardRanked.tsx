@@ -4,25 +4,23 @@ import Image from 'next/image'
 import type { Produto, Categoria } from '@/types'
 import { formatarPreco } from '@/lib/produtos'
 
-interface ProductCardProps {
+interface ProductCardRankedProps {
   produto: Produto
   categoria: Categoria
-  forceColor?: string   // usado pelo explorar/mais-vendidos para forçar cor
   priority?: boolean
+  badgeLabel?: string
+  badgeColor?: string
 }
 
-export default function ProductCard({ produto, categoria, forceColor, priority }: ProductCardProps) {
+export default function ProductCardRanked({
+  produto,
+  categoria,
+  priority,
+  badgeLabel = 'Mais Vendido',
+  badgeColor = '#F97316',
+}: ProductCardRankedProps) {
   const precoOriginalReal = (produto as any).precoOriginal || (produto as any).preco_original || produto.preco_original
   const linkDestino = produto.link_afiliado || (produto as any).linkAfiliado || '#'
-
-  // Cor do tema do card = forceColor → cor da categoria → fallback verde
-  const catColor = forceColor ?? categoria?.cor ?? '#22C55E'
-
-  // Badge independente da cor do card
-  const badge: { label: string; bg: string } | null =
-    produto.destaque ? { label: 'Mais Vendido', bg: '#F97316' } :
-    produto.novo     ? { label: 'Novidade',     bg: '#22D3EE' } :
-    null
 
   const handleTrackClick = () => {
     fetch('/api/track-click', {
@@ -43,10 +41,10 @@ export default function ProductCard({ produto, categoria, forceColor, priority }
       onClick={handleTrackClick}
       className="relative group flex flex-col overflow-hidden rounded-2xl bg-[#1E1E2E] border border-[#2A2A35] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
     >
-      {/* Borda de hover — cor da categoria, não do badge */}
+      {/* Borda de hover individual */}
       <div
         className="absolute inset-0 rounded-2xl border-2 border-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20"
-        style={{ borderColor: catColor }}
+        style={{ borderColor: badgeColor }}
       />
 
       {/* Imagem — sem tags sobrepostas */}
@@ -70,19 +68,17 @@ export default function ProductCard({ produto, categoria, forceColor, priority }
       {/* Conteúdo */}
       <div className="flex flex-col p-3 gap-1.5">
 
-        {/* Linha 1: Badge — altura fixa para alinhamento */}
+        {/* Linha 1: Badge sempre presente */}
         <div className="h-5 flex items-center">
-          {badge && (
-            <span
-              className="inline-flex items-center text-[9px] md:text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-md text-[#0F0F13]"
-              style={{ backgroundColor: badge.bg }}
-            >
-              {badge.label}
-            </span>
-          )}
+          <span
+            className="inline-flex items-center text-[9px] md:text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-md text-[#0F0F13]"
+            style={{ backgroundColor: badgeColor }}
+          >
+            {badgeLabel}
+          </span>
         </div>
 
-        {/* Linha 2: Preço riscado — altura fixa para alinhamento */}
+        {/* Linha 2: Preço riscado — altura fixa */}
         <div className="h-4 flex items-center">
           {precoOriginalReal && precoOriginalReal > produto.preco && (
             <p className="text-[10px] text-[#A1A1AA] line-through opacity-70 leading-none">
@@ -91,9 +87,9 @@ export default function ProductCard({ produto, categoria, forceColor, priority }
           )}
         </div>
 
-        {/* Linha 3: Preço atual (cor da categoria) + % OFF verde */}
+        {/* Linha 3: Preço + % OFF verde */}
         <div className="flex items-baseline gap-1.5 flex-wrap">
-          <p className="text-base md:text-lg font-black leading-none" style={{ color: catColor }}>
+          <p className="text-base md:text-lg font-black leading-none" style={{ color: badgeColor }}>
             {formatarPreco(produto.preco)}
           </p>
           {produto.desconto_pct && produto.desconto_pct > 0 && (
@@ -108,10 +104,10 @@ export default function ProductCard({ produto, categoria, forceColor, priority }
           {produto.nome}
         </p>
 
-        {/* Botão — cor da categoria */}
+        {/* Botão */}
         <div
           className="mt-1 w-full rounded-xl py-2.5 text-center text-[10px] font-black text-[#0F0F13] group-hover:brightness-110 transition-all flex items-center justify-center gap-1"
-          style={{ backgroundColor: catColor, boxShadow: `0 4px 12px ${catColor}33` }}
+          style={{ backgroundColor: badgeColor, boxShadow: `0 4px 12px ${badgeColor}33` }}
         >
           VER OFERTA →
         </div>

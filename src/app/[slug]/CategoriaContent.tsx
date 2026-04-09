@@ -35,13 +35,10 @@ export default function CategoriaContent({ slug, categoriaAtual, categorias, pro
       return dentroPreco && naLoja && temTags
     })
 
+    if (ordenacao === 'mais_vendidos') filtrados = filtrados.filter((p: any) => p.destaque === true)
+    if (ordenacao === 'novidades') filtrados = filtrados.filter((p: any) => p.novo === true)
     if (ordenacao === 'menor_preco') filtrados.sort((a: any, b: any) => a.preco - b.preco)
     if (ordenacao === 'maior_preco') filtrados.sort((a: any, b: any) => b.preco - a.preco)
-    if (ordenacao === 'desconto') filtrados.sort((a: any, b: any) => {
-      const descA = (a.preco_original || 0) - a.preco
-      const descB = (b.preco_original || 0) - b.preco
-      return descB - descA
-    })
 
     return filtrados
   }, [filtros, produtosIniciais, precoMaximoReal, ordenacao])
@@ -125,7 +122,8 @@ export default function CategoriaContent({ slug, categoriaAtual, categorias, pro
                   <option value="popularidade">Popularidade</option>
                   <option value="menor_preco">Menor Preço</option>
                   <option value="maior_preco">Maior Preço</option>
-                  <option value="desconto">Melhores Ofertas</option>
+                  <option value="mais_vendidos">Mais Vendidos</option>
+                  <option value="novidades">Novidades</option>
                 </select>
               </div>
             </div>

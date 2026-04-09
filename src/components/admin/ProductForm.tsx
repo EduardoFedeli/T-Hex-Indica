@@ -435,13 +435,23 @@ export default function ProductForm({ categorias = [], produto, onSave, onCancel
             </div>
             
             <div className="flex gap-4 flex-1">
-              <div className="flex-1 flex items-center justify-center gap-2 bg-[#0F0F13] px-2 rounded-lg border border-[#2A2A35] h-9">
-                <Switch id="destaque" checked={destaque} onCheckedChange={setDestaque} className="scale-75 origin-left" />
-                <Label htmlFor="destaque" className="cursor-pointer font-bold text-[11px] select-none">Vitrine</Label>
+              <div className="flex-1 flex items-center justify-center gap-2 bg-[#0F0F13] px-2 rounded-lg border border-[#F97316]/40 h-9">
+                <Switch
+                  id="destaque"
+                  checked={destaque}
+                  onCheckedChange={(v) => { setDestaque(v); if (v) setNovo(false) }}
+                  className="scale-75 origin-left"
+                />
+                <Label htmlFor="destaque" className="cursor-pointer font-bold text-[11px] select-none text-[#F97316]">🏆 Mais Vendido</Label>
               </div>
-              <div className="flex-1 flex items-center justify-center gap-2 bg-[#0F0F13] px-2 rounded-lg border border-[#2A2A35] h-9">
-                <Switch id="novo" checked={novo} onCheckedChange={setNovo} className="scale-75 origin-left" />
-                <Label htmlFor="novo" className="cursor-pointer font-bold text-[11px] select-none">Novo</Label>
+              <div className="flex-1 flex items-center justify-center gap-2 bg-[#0F0F13] px-2 rounded-lg border border-[#22D3EE]/40 h-9">
+                <Switch
+                  id="novo"
+                  checked={novo}
+                  onCheckedChange={(v) => { setNovo(v); if (v) setDestaque(false) }}
+                  className="scale-75 origin-left"
+                />
+                <Label htmlFor="novo" className="cursor-pointer font-bold text-[11px] select-none text-[#22D3EE]">🔥 Novidade</Label>
               </div>
             </div>
           </div>

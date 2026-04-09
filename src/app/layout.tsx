@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Footer from '@/components/Footer'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -34,8 +35,9 @@ export default function RootLayout({
       {/* DICA DE UX: Garanta que o body tenha o fundo Dark & Bold 
           para evitar "flash" branco ao carregar.
       */}
-      <body className="min-h-screen bg-[#0F0F13] text-white font-sans">
+      <body className="min-h-screen bg-[#0F0F13] text-white font-sans flex flex-col">
         {children}
+        <Footer />
       </body>
     </html>
   )
