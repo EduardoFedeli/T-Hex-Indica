@@ -5,32 +5,35 @@ import { createClient } from '@supabase/supabase-js'
 export const dynamic = 'force-dynamic'
 
 export default async function CategoriasPage() {
-  // 1. Busca as categorias básicas (emotes, nomes, slugs)
+  // 1. Busca as categorias básicas
   const categoriasBase = await getCategorias()
   
-  // 2. Conecta no Supabase usando a SERVICE_ROLE_KEY (Chave Mestre)
-  // Isso garante que leremos TODOS os produtos para a contagem, pulando RLS.
+  // 2. Conecta no Supabase usando a SERVICE_ROLE_KEY
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // A chave secreta e segura do servidor
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  // 3. Busca apenas as colunas de categoria dos produtos
-  const { data: produtos } = await supabase.from('produtos').select('categoriaSlugs')
+  // 3. CORREÇÃO: Busca as DUAS colunas (plural e singular) para garantir compatibilidade com produtos antigos
+  const { data: produtos } = await supabase.from('produtos').select('categoriaSlugs, categoriaSlug')
 
-  // 4. Faz a matemática da contagem (robusta contra formatos de array/texto)
+  // 4. Faz a matemática da contagem blindada
   const categoriasComContagem = categoriasBase.map(cat => {
     const contagem = produtos?.filter(p => {
-      if (!p.categoriaSlugs) return false;
+      let slugsArray: string[] = [];
       
-      let slugsArray = [];
+      // Checa o formato novo (Array)
       if (Array.isArray(p.categoriaSlugs)) {
         slugsArray = p.categoriaSlugs;
       } else if (typeof p.categoriaSlugs === 'string') {
         try { slugsArray = JSON.parse(p.categoriaSlugs); } catch (e) {}
       }
 
-      return slugsArray.includes(cat.slug);
+      // Valida se está no array novo OU se está na coluna antiga (fallback)
+      const noArrayNovo = slugsArray.includes(cat.slug);
+      const naColunaAntiga = p.categoriaSlug === cat.slug;
+
+      return noArrayNovo || naColunaAntiga;
     }).length || 0;
 
     return {
@@ -39,7 +42,7 @@ export default async function CategoriasPage() {
     }
   })
 
-  // 5. Manda para o componente visual novo
+  // 5. Manda para o componente visual
   return (
     <div>
       <CategoriesPanel categorias={categoriasComContagem} />

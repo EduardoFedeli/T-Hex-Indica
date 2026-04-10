@@ -39,6 +39,7 @@ export default async function NovidadesPage() {
         produtosIniciais={produtosIniciais}
         marketplacesDisponiveis={lojasPresentes}
         tagsDaCategoria={tagsPresentes}
+        opcoesOcultasOrdenacao={['novidades']} // <-- Esta linha faz a mágica acontecer!
       />
     </div>
   )

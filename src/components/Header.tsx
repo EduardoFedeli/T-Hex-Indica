@@ -22,6 +22,7 @@ interface CategoriaComImagem extends Categoria {
 export default function Header() {
   const [busca, setBusca] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [todosProdutos, setTodosProdutos] = useState<any[]>([])
   const [categoriasMenu, setCategoriasMenu] = useState<CategoriaComImagem[]>([])
   const searchRef = useRef<HTMLDivElement>(null)
@@ -62,13 +63,21 @@ export default function Header() {
       .slice(0, 6)
   }, [busca, todosProdutos])
 
+  // Componente interno para padronizar os links com sublinhado animado
+  const NavLink = ({ href, children }: { href: string, children: React.ReactNode }) => (
+    <Link href={href} className="relative py-2 text-[13px] font-bold text-[#A1A1AA] hover:text-white transition-colors uppercase tracking-wider group">
+      {children}
+      <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-[#22C55E] transition-all duration-300 group-hover:w-full" style={{ backgroundColor: 'var(--brand-color, #22C55E)' }}></span>
+    </Link>
+  )
+
   return (
     <header className="sticky top-0 z-50 w-full bg-[#1A1A24]/90 backdrop-blur-md border-b border-[#2A2A35] transition-colors duration-500">
       <div className="mx-auto flex h-20 w-full max-w-[1600px] items-center justify-between px-4 md:px-8 gap-4 md:gap-8">
         
-        {/* BLOCO 1: ESQUERDA (Logo + Categorias) */}
-        <div className="flex items-center gap-4 md:gap-6 shrink-0">
-          <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0 transition-transform hover:scale-105 group">
+        {/* BLOCO 1: ESQUERDA (Logo) */}
+        <div className="shrink-0">
+          <Link href="/" className="flex items-center gap-2 md:gap-3 transition-transform hover:scale-105 group">
             <div className="relative w-10 h-10 sm:w-12 sm:h-12 drop-shadow-md">
               <Image src="/assets/mascot/icone3.png" alt="T-Hex Mascote" fill sizes="(max-width: 768px) 100px, 150px" className="object-contain" />
             </div>
@@ -76,53 +85,18 @@ export default function Header() {
               <span style={{ color: 'var(--brand-color, #22C55E)' }} className="transition-colors duration-500">T-HEX</span> INDICA
             </span>
           </Link>
-
-          {/* Menu Categorias */}
-          <div className="relative group/menu h-20 flex items-center">
-            <button className="hidden md:flex px-2 items-center text-[#A1A1AA] font-bold text-sm transition-all hover:text-white whitespace-nowrap gap-1.5">
-              Categorias
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover/menu:opacity-100 transition-transform group-hover/menu:rotate-180"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-
-            {/* Backdrop */}
-            <div className="fixed inset-x-0 top-20 h-[calc(100vh-80px)] bg-[#0F0F13]/60 backdrop-blur-[2px] opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all duration-300 z-40" />
-            
-            {/* Dropdown Vertical Unificado */}
-            {categoriasMenu.length > 0 && (
-              <div className="absolute top-[70px] left-0 pt-4 opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all duration-300 z-50 w-[260px]">
-                <div className="bg-[#1A1A24] border border-[#2A2A35] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] py-2 flex flex-col">
-                  {categoriasMenu.map(cat => (
-                    <Link 
-                      key={cat.slug} 
-                      href={`/${cat.slug}`}
-                      className="px-6 py-3 text-sm font-bold text-[#A1A1AA] hover:bg-[#2A2A35] hover:text-[var(--hover-color)] transition-colors"
-                      style={{ '--hover-color': cat.cor } as React.CSSProperties}
-                    >
-                      {cat.nome}
-                    </Link>
-                  ))}
-                  <div className="h-px w-full bg-[#2A2A35] my-2" />
-                  <Link href="/mais-vendidos" className="px-6 py-3 text-sm font-bold text-[#A1A1AA] hover:text-white hover:bg-[#2A2A35] transition-colors">Mais vendidos</Link>
-                  <Link href="/novidades" className="px-6 py-3 text-sm font-bold text-[#A1A1AA] hover:text-white hover:bg-[#2A2A35] transition-colors">Novidades</Link>
-                  <Link href="/explorar" className="px-6 py-3 text-sm font-bold text-[#A1A1AA] hover:text-white hover:bg-[#2A2A35] transition-colors">Todos os Produtos</Link>
-                  <div className="h-px w-full bg-[#2A2A35] my-2" />
-                  <Link href="/categorias" className="px-6 py-3 text-sm font-black text-[#22C55E] hover:bg-[#2A2A35] transition-colors">Ver todas as categorias</Link>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
 
         {/* BLOCO 2: CENTRO (Busca Ampla) */}
-        <div className="flex-1 w-full max-w-2xl relative" ref={searchRef}>
+        <div className="flex-1 w-full max-w-3xl relative" ref={searchRef}>
           <div className="relative group w-full">
             <input
               type="text"
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               onFocus={() => setIsFocused(true)}
-              placeholder="Buscar ofertas, lojas ou categorias..."
-              className="w-full h-10 md:h-11 rounded-full bg-[#0F0F13] border border-[#2A2A35] pl-5 pr-12 text-sm text-white focus:outline-none transition-all duration-300"
+              placeholder="Buscar ofertas, lojas ou produtos..."
+              className="w-full h-10 md:h-12 rounded-full bg-[#0F0F13] border border-[#2A2A35] pl-5 pr-12 text-sm text-white focus:outline-none transition-all duration-300"
               style={{ borderColor: isFocused ? 'var(--brand-color, #22C55E)' : '#2A2A35' }}
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -130,9 +104,9 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Resultados da Busca Dropdown */}
+          {/* Resultados da Busca */}
           {isFocused && busca.trim().length >= 2 && (
-            <div className="absolute top-14 left-0 right-0 bg-[#1A1A24] border border-[#2A2A35] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] overflow-hidden z-50">
+            <div className="absolute top-14 left-0 right-0 bg-[#1A1A24] border border-[#2A2A35] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               {resultadosBusca.length > 0 ? (
                 <ul>
                   {resultadosBusca.map((prod) => {
@@ -158,28 +132,83 @@ export default function Header() {
           )}
         </div>
 
-        {/* BLOCO 3: DIREITA (Sobre + Explorar) */}
-        <div className="flex items-center gap-4 md:gap-6 shrink-0">
-          <Link 
-            href="/sobre" 
-            className="hidden md:block text-sm font-bold text-[#A1A1AA] hover:text-white transition-colors"
-          >
-            Sobre
-          </Link>
+        {/* BLOCO 3: DIREITA (Navegação Desktop & Botão Mobile) */}
+        <div className="flex items-center shrink-0">
           
+          {/* Navegação Desktop (Oculta em telas menores que LG) */}
+          <nav className="hidden lg:flex items-center gap-6">
+            <NavLink href="/mais-vendidos">Mais Vendidos</NavLink>
+            <NavLink href="/novidades">Novidades</NavLink>
+            
+            {/* Mega Menu Categorias */}
+            <div 
+              className="relative h-20 flex items-center"
+              onMouseEnter={() => setIsMenuOpen(true)}
+              onMouseLeave={() => setIsMenuOpen(false)}
+            >
+              <button className="relative py-2 text-[13px] font-bold text-[#A1A1AA] hover:text-white transition-colors uppercase tracking-wider group flex items-center gap-1.5">
+                Categorias
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 ${isMenuOpen ? 'rotate-180 text-white' : ''}`}><path d="m6 9 6 6 6-6"/></svg>
+                {/* Linha animada do botão pai */}
+                <span className={`absolute left-0 bottom-0 h-[2px] bg-[#22C55E] transition-all duration-300 ${isMenuOpen ? 'w-full' : 'w-0 group-hover:w-full'}`} style={{ backgroundColor: 'var(--brand-color, #22C55E)' }}></span>
+              </button>
+
+              {/* O Dropdown em Grid */}
+              {isMenuOpen && categoriasMenu.length > 0 && (
+                <div className="absolute top-[70px] right-0 w-[560px] bg-[#1A1A24] border border-[#2A2A35] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] p-5 flex flex-col z-50 animate-in fade-in zoom-in-95 duration-200">
+                  
+                  {/* Grid de Ícones 2 Colunas */}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {categoriasMenu.map(cat => (
+                      <Link 
+                        key={cat.slug} 
+                        href={`/${cat.slug}`}
+                        className="flex items-center gap-4 p-3 rounded-2xl hover:bg-[#2A2A35] transition-all duration-300 group/cat"
+                      >
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-[#2A2A35] group-hover/cat:border-transparent group-hover/cat:scale-110 transition-all" style={{ backgroundColor: `${cat.cor}15` }}>
+                          {cat.imagem_url ? (
+                            <img src={cat.imagem_url} alt={cat.nome} className="w-6 h-6 object-contain filter drop-shadow-md" />
+                          ) : (
+                            <span className="text-xl">{cat.emoji}</span>
+                          )}
+                        </div>
+                        <span className="text-xs font-bold text-white uppercase tracking-widest group-hover/cat:text-[var(--hover-color)] transition-colors" style={{ '--hover-color': cat.cor } as React.CSSProperties}>
+                          {cat.nome}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Rodapé do Menu */}
+                  <div className="pt-4 border-t border-[#2A2A35] mt-2">
+                    <Link href="/categorias" className="flex items-center justify-center w-full py-3 rounded-xl bg-[#22C55E]/10 text-[#22C55E] text-[11px] font-black uppercase tracking-widest hover:bg-[#22C55E] hover:text-[#0F0F13] transition-all">
+                      Ver Todas as Categorias →
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <NavLink href="/sobre">Sobre</NavLink>
+            <NavLink href="/explorar">Explorar</NavLink>
+          </nav>
+
+          {/* Botão Mobile (Substitui o "Explorar" por "Categorias" em telas pequenas) */}
           <Link 
-            href="/explorar" 
-            className="flex px-4 md:px-6 h-9 md:h-10 items-center justify-center rounded-full bg-white/5 text-white font-bold text-[10px] md:text-sm uppercase transition-all hover:text-[#0F0F13] whitespace-nowrap active:scale-95"
+            href="/categorias" 
+            className="flex lg:hidden px-4 md:px-6 h-10 items-center justify-center rounded-full bg-white/5 border border-[#2A2A35] text-white font-black text-[10px] md:text-xs uppercase transition-all active:scale-95 ml-2"
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim() || '#22C55E'
               e.currentTarget.style.color = '#0F0F13'
+              e.currentTarget.style.borderColor = 'transparent'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'
               e.currentTarget.style.color = 'white'
+              e.currentTarget.style.borderColor = '#2A2A35'
             }}
           >
-            Explorar
+            Categorias
           </Link>
         </div>
 
